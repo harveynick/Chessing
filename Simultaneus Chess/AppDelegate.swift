@@ -15,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     let mainWindow = UIWindow()
-    mainWindow.rootViewController = ChessCollectionViewController()
+    let game = Game(gameController: RegularGameController())
+    mainWindow.rootViewController = ChessCollectionViewController(game: game)
     mainWindow.makeKeyAndVisible()
     self.window = mainWindow
     return true

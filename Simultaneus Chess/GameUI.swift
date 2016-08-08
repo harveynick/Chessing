@@ -14,9 +14,12 @@ let kDesignations = [ "R", "N", "B", "K", "Q", "B", "N", "R",
 
 let kPrettyDesignations = [ "R": "♜", "N": "♞", "B" : "♝", "Q" : "♛", "K" : "♚", "P": "♟" ]
 
+// Mark: ChessBoardCell
+
 class ChessBoardCell : UICollectionViewCell {
-    
 }
+
+// Mark: ChessPieceCell
 
 class ChessPieceCell : UICollectionViewCell {
   
@@ -50,14 +53,16 @@ class ChessPieceCell : UICollectionViewCell {
   
 }
 
-/// Mark - ChessCollectionViewLayout
+// Mark - ChessCollectionViewLayout
 
 class ChessCollectionViewLayout : UICollectionViewLayout {
   
   private var boardRects : [CGRect]?
   private var peiceRects : [CGRect]?
+  private var gameState: GameState
   
-  override init() {
+  init(gameState: GameState) {
+    self.gameState = gameState
     super.init()
   }
   
@@ -80,25 +85,26 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     let leftPadding = floor((size.width - (tileSize * 8)) / 2)
     let topPadding = floor((size.height - (tileSize * 8)) / 2)
     
+    func rectForRow(row: Int, column: Int) -> CGRect {
+      return CGRectMake(leftPadding + CGFloat(column) * tileSize,
+                        topPadding + CGFloat(row) * tileSize,
+                        tileSize,
+                        tileSize);
+    }
+    
     var boardRects = Array<CGRect>()
     var peiceRects = Array<CGRect>()
     for i in 0 ..< 64 {
       let column = i % 8;
       let row = (i - column) / 8
-      let rect = CGRectMake(leftPadding + CGFloat(column) * tileSize,
-                            topPadding + CGFloat(row) * tileSize,
-                            tileSize,
-                            tileSize)
-      boardRects.append(rect)
+      boardRects.append(rectForRow(row, column: column))
     }
-    for i in 0 ..< 16 {
-      peiceRects.append(boardRects[i])
-    }
-    for i in 0 ..< 8 {
-      peiceRects.append(boardRects[56 + i])
-    }
-    for i in 0 ..< 8 {
-      peiceRects.append(boardRects[48 + i])
+    for peice in self.gameState.controller.pieces {
+      if let position = self.gameState.pieceToPosition[peice] {
+        peiceRects.append(rectForRow(Int(position.row), column: Int(position.column)))
+      } else {
+        // handle taken peices
+      }
     }
     self.boardRects = boardRects
     self.peiceRects = peiceRects
@@ -158,9 +164,18 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
 }
 
 class ChessCollectionViewController : UICollectionViewController {
-    
-  init() {
-    super.init(collectionViewLayout: ChessCollectionViewLayout())
+  
+  var game : Game
+  
+  init(game : Game) {
+    self.game = game
+    var currentSate : GameState
+    if let outcome = game.outcomes.last {
+      currentSate = outcome.finalState
+    } else {
+      currentSate = game.gameController.initialState
+    }
+    super.init(collectionViewLayout: ChessCollectionViewLayout(gameState: currentSate))
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -199,8 +214,9 @@ class ChessCollectionViewController : UICollectionViewController {
     } else {
       let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChessPiece", forIndexPath: indexPath)
       let pieceCell = cell as! ChessPieceCell
-      pieceCell.designation = kPrettyDesignations[kDesignations[indexPath.item % 16]]
-      pieceCell.teamColor = indexPath.item < 16 ? UIColor.blueColor() : UIColor.redColor()
+      let piece = self.game.gameController.pieces[indexPath.item]
+      pieceCell.designation = kPrettyDesignations[String(piece.type)]
+      pieceCell.teamColor = piece.player.colour == "B" ? UIColor.blueColor() : UIColor.redColor()
       return cell
     }
   }
