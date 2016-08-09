@@ -55,23 +55,20 @@ public func ==(lhs: Position, rhs: Position) -> Bool {
 
 public struct Player {
   let colour: Character
-  let homeBoard: UInt
-  let homeRowIsTop: Bool
+  let home: Position
 }
 
 extension Player : Hashable {
   public var hashValue: Int {
     get {
-      return self.colour.hashValue ^ self.homeBoard.hashValue ^ self.homeRowIsTop.hashValue
+      return self.colour.hashValue ^ self.home.hashValue
     }
   }
 }
 
 extension Player : Equatable {}
 public func ==(lhs: Player, rhs: Player) -> Bool {
-  return lhs.colour == rhs.colour &&
-    lhs.homeBoard == rhs.homeBoard &&
-    lhs.homeRowIsTop == rhs.homeRowIsTop
+  return lhs.colour == rhs.colour && lhs.home == rhs.home
 }
 
 // Mark: Peice

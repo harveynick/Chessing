@@ -9,19 +9,22 @@
 import Foundation
 import UIKit
 
-let kDesignations = [ "R", "N", "B", "K", "Q", "B", "N", "R",
-                      "P", "P", "P", "P", "P", "P", "P", "P" ]
-
 let kPrettyDesignations = [ "R": "♜", "N": "♞", "B" : "♝", "Q" : "♛", "K" : "♚", "P": "♟" ]
+
+enum SectionType : Int {
+  case Board, Piece, Count
+}
 
 // Mark: ChessBoardCell
 
 class ChessBoardCell : UICollectionViewCell {
+  static let reuseIdentifier = "ChessBoardCell"
 }
 
 // Mark: ChessPieceCell
 
 class ChessPieceCell : UICollectionViewCell {
+  static let reuseIdentifier = "ChessPieceCell"
   
   private let label : UILabel
   
@@ -79,6 +82,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     guard let collectionView = self.collectionView else {
       return;
     }
+    let gameController = self.gameState.controller
     let size = collectionView.bounds.size;
     let minDimension = min(size.width, size.height)
     let tileSize = floor(minDimension / 8)
@@ -111,10 +115,9 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
   }
   
   override func collectionViewContentSize() -> CGSize {
-    guard let boardRects = self.boardRects else {
+    guard let boardRects = self.boardRects, boardRect = boardRects.last else {
       return CGSizeZero
     }
-    let boardRect = boardRects[64 - 1]
     return CGSizeMake(CGRectGetMaxX(boardRect), CGRectGetMaxY(boardRect))
   }
   
@@ -123,19 +126,17 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
       return nil
     }
     var attributes = Array<UICollectionViewLayoutAttributes>()
-    for i in 0 ..< 64 {
-      let boardRect = boardRects[i]
+    for (i, boardRect) in boardRects.enumerate() {
       if (CGRectIntersectsRect(rect, boardRect)) {
-        let indexPath = NSIndexPath(forItem:i, inSection:0)
+        let indexPath = NSIndexPath(forItem:i, inSection:SectionType.Board.rawValue)
         if let localAttributes = self.layoutAttributesForItemAtIndexPath(indexPath) {
           attributes.append(localAttributes)
         }
       }
     }
-    for i in 0 ..< 32 {
-      let peiceRect = peiceRects[i]
+    for (i, peiceRect) in peiceRects.enumerate() {
       if (CGRectIntersectsRect(rect, peiceRect)) {
-        let indexPath = NSIndexPath(forItem:i, inSection:1)
+        let indexPath = NSIndexPath(forItem:i, inSection:SectionType.Piece.rawValue)
         if let localAttributes = self.layoutAttributesForItemAtIndexPath(indexPath) {
           attributes.append(localAttributes)
         }
@@ -145,7 +146,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
   }
   
   override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-    if (indexPath.section == 0) {
+    if (indexPath.section == SectionType.Board.rawValue) {
       guard let boardRects = self.boardRects else {
         return nil
       }
@@ -185,34 +186,44 @@ class ChessCollectionViewController : UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad();
     guard let collectionView  = self.collectionView else {
-      return;
+      return
     }
     collectionView.backgroundColor = UIColor.whiteColor()
-    collectionView.registerClass(ChessBoardCell.self, forCellWithReuseIdentifier: "ChessBoard")
-    collectionView.registerClass(ChessPieceCell.self, forCellWithReuseIdentifier: "ChessPiece")
+    collectionView.registerClass(ChessBoardCell.self, forCellWithReuseIdentifier: ChessBoardCell.reuseIdentifier)
+    collectionView.registerClass(ChessPieceCell.self, forCellWithReuseIdentifier: ChessPieceCell.reuseIdentifier)
+  }
+  
+  override func prefersStatusBarHidden() -> Bool {
+    return true
   }
     
   /// Mark: UICollectionViewDataSource
     
   override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-    return 2;
+    return SectionType.Count.rawValue;
   }
     
   override func collectionView(collectionView: UICollectionView,
                                numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 64 : 32;
+    let gameController = self.game.gameController
+    if section == SectionType.Board.rawValue {
+      return Int(gameController.boards * gameController.boardHeight * gameController.boardWidth)
+    } else {
+      return gameController.pieces.count;
+    }
   }
   
   override func collectionView(collectionView: UICollectionView,
                                cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    if (indexPath.section == 0) {
-      let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChessBoard", forIndexPath: indexPath)
-      let column = indexPath.item % 8;
-      let row = (indexPath.item - column) / 8
+    if (indexPath.section == SectionType.Board.rawValue) {
+      let cell = collectionView.dequeueReusableCellWithReuseIdentifier(ChessBoardCell.reuseIdentifier, forIndexPath: indexPath)
+      let gameController = self.game.gameController
+      let column = UInt(indexPath.item) % gameController.boardWidth;
+      let row = (UInt(indexPath.item) - column) / gameController.boardHeight
       cell.contentView.backgroundColor = ((row + column) % 2 == 0) ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.9, alpha: 1)
       return cell
     } else {
-      let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChessPiece", forIndexPath: indexPath)
+      let cell = collectionView.dequeueReusableCellWithReuseIdentifier(ChessPieceCell.reuseIdentifier, forIndexPath: indexPath)
       let pieceCell = cell as! ChessPieceCell
       let piece = self.game.gameController.pieces[indexPath.item]
       pieceCell.designation = kPrettyDesignations[String(piece.type)]

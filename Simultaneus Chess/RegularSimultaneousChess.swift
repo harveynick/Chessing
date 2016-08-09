@@ -47,6 +47,9 @@ let prettyPieceMapping : [RegularColor : [RegularPiece : String] ] = [
     ]
 ]
 
+let player1 = Player(colour: "B", home: Position(row: 0, column: 0))
+let player2 = Player(colour: "W", home: Position(row: 7, column: 7))
+
 public func regularInitialPieces(players: [Player]) -> [Piece] {
   var pieces: [Piece] = []
   for player in players {
@@ -55,19 +58,16 @@ public func regularInitialPieces(players: [Player]) -> [Piece] {
             player: player,
             type:pieceType.rawValue,
             designation:"\(player.colour)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: player.homeRowIsTop ? 0 : 7, column: UInt(column))))
+            startingPosition:Position(row: player.home.row, column: UInt(column))))
         pieces.append(Piece(
             player: player,
             type:RegularPiece.Pawn.rawValue,
             designation:"\(player.colour)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: player.homeRowIsTop ? 1 : 6, column: UInt(column))))
+            startingPosition:Position(row: player == player1 ? 1 : 6, column: UInt(column))))
     }
   }
   return pieces
 }
-
-let player1 = Player(colour: "B", homeBoard: 0, homeRowIsTop: true)
-let player2 = Player(colour: "W", homeBoard: 0, homeRowIsTop: false)
 
 struct RegularGameController : GameController {
   let boards: UInt = kNumberOfBoards
