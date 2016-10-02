@@ -2,7 +2,7 @@ extension Position : CustomStringConvertible {
   public var description : String {
     get {
       let columnNames : String = "abcsefghijklmnopqrstuvwzyz"
-      let index = columnNames.startIndex.advancedBy(Int(column))
+      let index = columnNames.characters.index(columnNames.startIndex, offsetBy: Int(column))
       let output = "\(columnNames[index])\(row + 1)"
       if let boardNumber = board {
         return "\(boardNumber)\(output)"

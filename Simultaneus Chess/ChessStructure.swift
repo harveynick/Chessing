@@ -1,23 +1,23 @@
 // Mark: Position
 
 public struct Position {
-  let board: UInt?
-  let row: UInt
-  let column: UInt
+  let board: Int?
+  let row: Int
+  let column: Int
   
-  init(row: UInt, column: UInt) {
+  init(row: Int, column: Int) {
       self.board = nil
       self.row = row
       self.column = column
   }
   
-  init(board: UInt, row: UInt, column: UInt) {
+  init(board: Int, row: Int, column: Int) {
       self.board = board
       self.row = row
       self.column = column
   }
   
-  func withRow(row: UInt) -> Position {
+  func withRow(_ row: Int) -> Position {
     if let board = self.board {
       return Position(board: board, row: row, column: self.column)
     } else {
@@ -25,7 +25,7 @@ public struct Position {
     }
   }
   
-  func withColoumn(column: UInt) -> Position {
+  func withColoumn(_ column: Int) -> Position {
     if let board = self.board {
       return Position(board: board, row: self.row, column: column)
     } else {
@@ -52,6 +52,7 @@ public func ==(lhs: Position, rhs: Position) -> Bool {
         lhs.row == rhs.row &&
         lhs.column == rhs.column
 }
+
 
 public struct Player {
   let colour: Character
@@ -169,14 +170,14 @@ public struct MoveMatrix {
 // Mark: GameController
 
 public protocol GameController {
-  var boards: UInt { get }
-  var boardWidth: UInt { get }
-  var boardHeight: UInt { get }
+  var boards: Int { get }
+  var boardWidth: Int { get }
+  var boardHeight: Int { get }
   var players : Set<Player> { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
-  func generateMoveMatrix(gameState: GameState) -> MoveMatrix
-  func resolveMoves(gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome
+  func generateMoveMatrix(_ gameState: GameState) -> MoveMatrix
+  func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome
 }
 
 // Mark: Game
@@ -185,7 +186,7 @@ public struct Game {
     let gameController: GameController
     let outcomes: Array<Outcome>
     
-    private init (gameController: GameController, outcomes: Array<Outcome>) {
+    fileprivate init (gameController: GameController, outcomes: Array<Outcome>) {
         self.gameController = gameController
         self.outcomes = outcomes
     }
@@ -197,7 +198,7 @@ public struct Game {
         self = Game(gameController:gameController, outcomes:[initialOutcome])
     }
     
-    func withOutcome(outcome: Outcome) -> Game {
+    func withOutcome(_ outcome: Outcome) -> Game {
         var newOutcomes = self.outcomes
         newOutcomes .append(outcome)
         return Game(gameController: self.gameController, outcomes: newOutcomes)
