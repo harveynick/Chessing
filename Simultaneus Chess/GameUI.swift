@@ -62,7 +62,7 @@ class ChessPieceCell : UICollectionViewCell {
   
 }
 
-// Mark: ChessBoardCell
+// Mark: ChessThreatCell
 
 class ChessThreatCell : UICollectionViewCell {
   static let reuseIdentifier = "ChessThreatCell"
@@ -84,10 +84,13 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
   
   fileprivate var boardRects : [CGRect]?
   fileprivate var peiceRects : [CGRect]?
-  fileprivate var gameState: GameState
+  fileprivate var threats : [Bool]?
+  fileprivate let gameState: GameState
+  fileprivate let selectedPiece: Piece?
   
-  init(gameState: GameState) {
+  init(gameState: GameState, selectedPiece: Piece?) {
     self.gameState = gameState
+    self.selectedPiece = selectedPiece
     super.init()
     self.register(ChessBoardCell.self, forDecorationViewOfKind: ChessBoardCell.reuseIdentifier)
   }
@@ -119,12 +122,22 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
                         height: tileSize);
     }
     
+    let threatenedPositons : [Position]
+    if let selectedPiece = self.selectedPiece {
+      let moves = self.gameState.controller.generateMoves(selectedPiece, gameState:gameState)
+      threatenedPositons = moves.map { move in move.finalPosition }
+    } else {
+      threatenedPositons = []
+    }
+    
     var boardRects = Array<CGRect>()
     var peiceRects = Array<CGRect>()
+    var threats = Array<Bool>()
     for i in 0 ..< 64 {
       let column = i % 8;
       let row = (i - column) / 8
       boardRects.append(rectForRow(row, column: column))
+      threats.append(threatenedPositons.contains(Position(row: row, column: column)))
     }
     for peice in self.gameState.controller.pieces {
       if let position = self.gameState.pieceToPosition[peice] {
@@ -135,6 +148,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     }
     self.boardRects = boardRects
     self.peiceRects = peiceRects
+    self.threats = threats
   }
   
   override var collectionViewContentSize : CGSize {
@@ -188,12 +202,12 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
       attributes.frame = peiceRects[(indexPath as NSIndexPath).item]
       return attributes;
     } else {
-      guard let boardRects = self.boardRects else {
+      guard let boardRects = self.boardRects, let threats = self.threats else {
         return nil
       }
       let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
       attributes.frame = boardRects[(indexPath as NSIndexPath).item]
-      attributes.alpha = 0.0
+      attributes.alpha = threats[(indexPath as NSIndexPath).item] ? 1.0 : 0.0
       return attributes;
     }
   }
@@ -205,13 +219,7 @@ class ChessCollectionViewController : UICollectionViewController {
   
   init(game : Game) {
     self.game = game
-    var currentSate : GameState
-    if let outcome = game.outcomes.last {
-      currentSate = outcome.finalState
-    } else {
-      currentSate = game.gameController.initialState
-    }
-    super.init(collectionViewLayout: ChessCollectionViewLayout(gameState: currentSate))
+    super.init(collectionViewLayout: ChessCollectionViewLayout(gameState:game.currentState, selectedPiece:nil))
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -273,6 +281,14 @@ class ChessCollectionViewController : UICollectionViewController {
   /// Mark: UICollectionViewDelegate
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    NSLog("\(indexPath)")
+    let selectedPiece : Piece?
+    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+      selectedPiece = self.game.gameController.pieces[(indexPath as NSIndexPath).item]
+    } else {
+      selectedPiece = nil
+    }
+    let newLayout = ChessCollectionViewLayout(gameState:self.game.currentState, selectedPiece:selectedPiece)
+    collectionView.setCollectionViewLayout(newLayout, animated: true)
+
   }
 }
