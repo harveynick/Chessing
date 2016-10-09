@@ -69,14 +69,14 @@ public func regularInitialPieces() -> [Piece] {
   return pieces
 }
 
-struct RegularGameController : GameController {
+struct RegularRules : Rules {
   let boards: Int = kNumberOfBoards
   let boardWidth: Int = kBoardWidth
   let boardHeight: Int = kBoardHeight
   let players: Set<Player> = [player1, player2]
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
-    return GameState(controller: self, startingPieces: self.pieces)
+    return GameState(rules: self, startingPieces: self.pieces)
   }
     
   func generateMoves(_ piece: Piece, gameState: GameState) -> [Move] {
@@ -100,7 +100,7 @@ struct RegularGameController : GameController {
       }
       break
     case RegularPiece.pawn.rawValue:
-      let yDirection = piece.startingPosition.row > (gameState.controller.boardHeight / 2) ? -1 : 1;
+      let yDirection = piece.startingPosition.row > (self.boardHeight / 2) ? -1 : 1;
       let consideredPosition1 = position.withRow(position.row + yDirection)
       if gameState.positionToPiece[consideredPosition1] == nil {
           moves.append(Move(movedPiece: piece, finalPosition: consideredPosition1, capturedPiece: nil))

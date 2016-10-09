@@ -116,13 +116,13 @@ public func ==(lhs: Move, rhs: Move) -> Bool {
 
 public struct GameState {
 
-  let controller: GameController
+  let rules: Rules
   let pieceToPosition: [Piece:Position]
   let positionToPiece: [Position:Piece]
   let capturedPeices: [Piece]
     
-  init(controller: GameController, startingPieces: [Piece]) {
-    self.controller = controller
+  init(rules: Rules, startingPieces: [Piece]) {
+    self.rules = rules
     var pieceToPosition : [Piece:Position] = [:]
     var positionToPiece : [Position:Piece] = [:]
     for piece in startingPieces {
@@ -135,8 +135,8 @@ public struct GameState {
     self.capturedPeices = []
   }
   
-  init(controller: GameController, newPositions: [Piece:Position], newCaptures: [Piece]) {
-    self.controller = controller
+  init(rules: Rules, newPositions: [Piece:Position], newCaptures: [Piece]) {
+    self.rules = rules
     self.pieceToPosition = newPositions
     var positionToPiece : [Position:Piece] = [:]
     for (piece, position) in newPositions {
@@ -167,9 +167,9 @@ public struct MoveMatrix {
   let threatenedPositions: [Position: Set<Piece>]
 }
 
-// Mark: GameController
+// Mark: Rules
 
-public protocol GameController {
+public protocol Rules {
   var boards: Int { get }
   var boardWidth: Int { get }
   var boardHeight: Int { get }
@@ -183,33 +183,33 @@ public protocol GameController {
 // Mark: Game
 
 public struct Game {
-  let gameController: GameController
+  let rules: Rules
   let outcomes: Array<Outcome>
   var currentState: GameState {
     get {
       if let outcome = self.outcomes.last {
         return outcome.finalState
       } else {
-        return self.gameController.initialState
+        return self.rules.initialState
       }
     }
   }
   
-  fileprivate init (gameController: GameController, outcomes: Array<Outcome>) {
-    self.gameController = gameController
+  fileprivate init (rules: Rules, outcomes: Array<Outcome>) {
+    self.rules = rules
     self.outcomes = outcomes
   }
 
-  init(gameController: GameController) {
+  init(rules: Rules) {
     let initialOutcome = Outcome(
       performedMoves: [:],
-          finalState: gameController.initialState)
-    self = Game(gameController:gameController, outcomes:[initialOutcome])
+          finalState: rules.initialState)
+    self = Game(rules:rules, outcomes:[initialOutcome])
   }
     
   func withOutcome(_ outcome: Outcome) -> Game {
     var newOutcomes = self.outcomes
     newOutcomes .append(outcome)
-   return Game(gameController: self.gameController, outcomes: newOutcomes)
+   return Game(rules: self.rules, outcomes: newOutcomes)
   }
 }

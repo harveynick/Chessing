@@ -36,17 +36,17 @@ extension GameState : CustomStringConvertible {
   public var description : String {
     get {
       var breakLine = "+"
-      for _ in 0 ..< self.controller.boardWidth {
+      for _ in 0 ..< self.rules.boardWidth {
         breakLine += "---+"
       }
       breakLine += "\n"
       
       var output = breakLine;
-      for board in 0 ..< self.controller.boards {
-        for row in 0 ..< self.controller.boardHeight {
+      for board in 0 ..< self.rules.boards {
+        for row in 0 ..< self.rules.boardHeight {
           output += "|"
-          for column in 0 ..< self.controller.boardWidth {
-            let thisPosition = self.controller.boards > 1
+          for column in 0 ..< self.rules.boardWidth {
+            let thisPosition = self.rules.boards > 1
               ? Position(board:board, row: row, column: column)
               : Position(row: row, column: column)
             if let piece = self.positionToPiece[thisPosition] {
