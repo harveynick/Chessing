@@ -46,6 +46,12 @@ class ChessPieceCell : UICollectionViewCell {
     }
   }
   
+  override var isHighlighted: Bool {
+    didSet {
+      label.font = UIFont.systemFont(ofSize: self.isHighlighted ? 40 : 32)
+    }
+  }
+  
   override init(frame: CGRect) {
     label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
     label.autoresizingMask = UIViewAutoresizing(rawValue: UIViewAutoresizing.flexibleWidth.rawValue | UIViewAutoresizing.flexibleHeight.rawValue)
@@ -280,6 +286,17 @@ class ChessCollectionViewController : UICollectionViewController {
   
   /// Mark: UICollectionViewDelegate
   
+  override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+    let selectedPiece : Piece?
+    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+      selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+    } else {
+      selectedPiece = nil
+    }
+    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
+    collectionView.setCollectionViewLayout(newLayout, animated: true)
+  }
+  
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let selectedPiece : Piece?
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
@@ -289,6 +306,5 @@ class ChessCollectionViewController : UICollectionViewController {
     }
     let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
     collectionView.setCollectionViewLayout(newLayout, animated: true)
-
   }
 }

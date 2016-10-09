@@ -53,6 +53,7 @@ public func ==(lhs: Position, rhs: Position) -> Bool {
         lhs.column == rhs.column
 }
 
+// Mark: Player
 
 public struct Player {
   let colour: Character
