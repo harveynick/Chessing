@@ -174,7 +174,7 @@ public protocol Rules {
   var boards: Int { get }
   var boardWidth: Int { get }
   var boardHeight: Int { get }
-  var players : Set<Player> { get }
+  var players : [Player] { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
   func generateMoves(_ piece: Piece, gameState: GameState) -> [Move]

@@ -36,13 +36,13 @@ class ChessPieceCell : UICollectionViewCell {
   
   var teamColor : UIColor? {
     didSet {
-      label.textColor = self.isSelected ? teamColor?.withAlphaComponent(0.5) : teamColor
+      label.textColor = teamColor
     }
   }
   
   override var isSelected: Bool {
     didSet {
-      label.textColor = self.isSelected ? teamColor?.withAlphaComponent(0.5) : teamColor
+      label.font = UIFont.systemFont(ofSize: self.isSelected ? 40 : 32)
     }
   }
   
@@ -222,9 +222,11 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
 class ChessCollectionViewController : UICollectionViewController {
   
   var gameState : GameState
+  let player : Player
   
-  init(gameState : GameState) {
+  init(gameState : GameState, player : Player) {
     self.gameState = gameState
+    self.player = player
     super.init(collectionViewLayout: ChessCollectionViewLayout(gameState:gameState, selectedPiece:nil))
   }
   
@@ -286,6 +288,14 @@ class ChessCollectionViewController : UICollectionViewController {
   
   /// Mark: UICollectionViewDelegate
   
+  override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+      let selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      return selectedPiece.player == self.player
+    }
+    return false
+  }
+  
   override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
     let selectedPiece : Piece?
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
@@ -294,7 +304,21 @@ class ChessCollectionViewController : UICollectionViewController {
       selectedPiece = nil
     }
     let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
-    collectionView.setCollectionViewLayout(newLayout, animated: true)
+    collectionView.setCollectionViewLayout(newLayout, animated: false)
+  }
+  
+  override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
+    collectionView.setCollectionViewLayout(newLayout, animated: false)
+  }
+  
+  override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+      let selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      let moves = self.gameState.rules.generateMoves(selectedPiece, gameState:gameState)
+      return moves.count > 0
+    }
+    return false
   }
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -305,6 +329,11 @@ class ChessCollectionViewController : UICollectionViewController {
       selectedPiece = nil
     }
     let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
-    collectionView.setCollectionViewLayout(newLayout, animated: true)
+    collectionView.setCollectionViewLayout(newLayout, animated: false)
+  }
+  
+  override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
+    collectionView.setCollectionViewLayout(newLayout, animated: false)
   }
 }

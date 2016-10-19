@@ -73,7 +73,7 @@ struct RegularRules : Rules {
   let boards: Int = kNumberOfBoards
   let boardWidth: Int = kBoardWidth
   let boardHeight: Int = kBoardHeight
-  let players: Set<Player> = [player1, player2]
+  let players: [Player] = [player1, player2]
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
     return GameState(rules: self, startingPieces: self.pieces)
