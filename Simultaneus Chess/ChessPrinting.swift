@@ -50,7 +50,7 @@ extension GameState : CustomStringConvertible {
               ? Position(board:board, row: row, column: column)
               : Position(row: row, column: column)
             if let piece = self.positionToPiece[thisPosition] {
-              output += "\(piece.player.colour)\(piece.type) "
+              output += "\(piece)\(piece.type) "
             } else {
               output += "   "
             }

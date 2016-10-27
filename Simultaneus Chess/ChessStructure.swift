@@ -55,23 +55,25 @@ public func ==(lhs: Position, rhs: Position) -> Bool {
 
 // Mark: Player
 
-public struct Player {
-  let colour: Character
-  let home: Position
-}
+public typealias Player = Int
 
-extension Player : Hashable {
-  public var hashValue: Int {
-    get {
-      return self.colour.hashValue ^ self.home.hashValue
-    }
-  }
-}
+//public struct Player {
+//  let colour: Character
+//  let home: Position
+//}
 
-extension Player : Equatable {}
-public func ==(lhs: Player, rhs: Player) -> Bool {
-  return lhs.colour == rhs.colour && lhs.home == rhs.home
-}
+//extension Player : Hashable {
+//  public var hashValue: Int {
+//    get {
+//      return self.colour.hashValue ^ self.home.hashValue
+//    }
+//  }
+//}
+//
+//extension Player : Equatable {}
+//public func ==(lhs: Player, rhs: Player) -> Bool {
+//  return lhs.colour == rhs.colour && lhs.home == rhs.home
+//}
 
 // Mark: Peice
 
@@ -174,7 +176,7 @@ public protocol Rules {
   var boards: Int { get }
   var boardWidth: Int { get }
   var boardHeight: Int { get }
-  var players : [Player] { get }
+  var players : UInt { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
   func generateMoves(_ piece: Piece, gameState: GameState) -> [Move]

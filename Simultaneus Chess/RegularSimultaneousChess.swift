@@ -47,23 +47,20 @@ let prettyPieceMapping : [RegularColor : [RegularPiece : String] ] = [
     ]
 ]
 
-let player1 = Player(colour: "B", home: Position(row: 0, column: 0))
-let player2 = Player(colour: "W", home: Position(row: 7, column: 7))
-
 public func regularInitialPieces() -> [Piece] {
   var pieces: [Piece] = []
-  for player in [ player1, player2 ] {
+  for player in [ 0, 1 ] {
     for (column, (belongsType, pieceType)) in fealty.enumerated() {
         pieces.append(Piece(
             player: player,
             type:pieceType.rawValue,
-            designation:"\(player.colour)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: player.home.row, column: column)))
+            designation:"\(player)\(belongsType)\(pieceType)",
+            startingPosition:Position(row: (player == 0) ? 0 : 7, column: column)))
         pieces.append(Piece(
             player: player,
             type:RegularPiece.pawn.rawValue,
-            designation:"\(player.colour)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: player == player1 ? 1 : 6, column: column)))
+            designation:"\(player)\(belongsType)\(pieceType)",
+            startingPosition:Position(row: (player == 0) ? 1 : 6, column: column)))
     }
   }
   return pieces
@@ -73,7 +70,7 @@ struct RegularRules : Rules {
   let boards: Int = kNumberOfBoards
   let boardWidth: Int = kBoardWidth
   let boardHeight: Int = kBoardHeight
-  let players: [Player] = [player1, player2]
+  let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
     return GameState(rules: self, startingPieces: self.pieces)

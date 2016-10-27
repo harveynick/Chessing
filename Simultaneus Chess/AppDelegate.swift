@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     let game = Game(rules: RegularRules())
     let gameState = game.currentState
     mainWindow.rootViewController = ChessCollectionViewController(gameState: gameState,
-                                                                     player: gameState.rules.players.last!)
+                                                                     player: 1)
     mainWindow.makeKeyAndVisible()
     self.window = mainWindow
     return true
