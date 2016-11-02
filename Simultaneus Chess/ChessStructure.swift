@@ -1,12 +1,12 @@
 // Mark: Position
 
 public struct Position {
-  let board: Int?
+  let board: Int
   let row: Int
   let column: Int
   
   init(row: Int, column: Int) {
-      self.board = nil
+      self.board = 0
       self.row = row
       self.column = column
   }
@@ -18,32 +18,20 @@ public struct Position {
   }
   
   func withRow(_ row: Int) -> Position {
-    if let board = self.board {
-      return Position(board: board, row: row, column: self.column)
-    } else {
-      return Position(row: row, column: self.column)
-    }
+    return Position(board: board, row: row, column: self.column)
   }
   
   func withColoumn(_ column: Int) -> Position {
-    if let board = self.board {
-      return Position(board: board, row: self.row, column: column)
-    } else {
-      return Position(row: self.row, column: column)
-    }
+    return Position(board: board, row: self.row, column: column)
   }
 }
 
 extension Position : Hashable {
-    public var hashValue: Int {
-        get {
-            var hashValue = (Int)((row << 1) + (column << 4))
-            if let boardNumber = board {
-                hashValue = hashValue + Int(boardNumber)
-            }
-            return hashValue
-        }
+  public var hashValue: Int {
+    get {
+      return (Int)((row << 1) + (column << 4)) + Int(board)
     }
+  }
 }
 
 extension Position : Equatable {}
@@ -53,27 +41,15 @@ public func ==(lhs: Position, rhs: Position) -> Bool {
         lhs.column == rhs.column
 }
 
+func +(left: Position, right: Position) -> Position {
+  return Position(board: left.board + right.board,
+                  row: left.row + right.row,
+                  column: left.column + right.column)
+}
+
 // Mark: Player
 
 public typealias Player = Int
-
-//public struct Player {
-//  let colour: Character
-//  let home: Position
-//}
-
-//extension Player : Hashable {
-//  public var hashValue: Int {
-//    get {
-//      return self.colour.hashValue ^ self.home.hashValue
-//    }
-//  }
-//}
-//
-//extension Player : Equatable {}
-//public func ==(lhs: Player, rhs: Player) -> Bool {
-//  return lhs.colour == rhs.colour && lhs.home == rhs.home
-//}
 
 // Mark: Peice
 

@@ -1,10 +1,5 @@
 import Foundation
 
-enum RegularColor : Character {
-    case black = "b"
-    case white = "w"
-}
-
 enum RegularPiece : PieceType {
     case rook = "R"
     case knight = "N"
@@ -15,8 +10,7 @@ enum RegularPiece : PieceType {
 }
 
 let kNumberOfBoards : Int = 1
-let kBoardWidth : Int = 8
-let kBoardHeight : Int = 8
+let kBoardSize : Int = 8
 
 let fealty : [(RegularPiece, RegularPiece)] = [
     (.queen, .rook),
@@ -28,24 +22,105 @@ let fealty : [(RegularPiece, RegularPiece)] = [
     (.king, .knight),
     (.king, .rook) ]
 
-let prettyPieceMapping : [RegularColor : [RegularPiece : String] ] = [
-    .black : [
-        .rook  :  "♜",
-        .knight : "♞",
-        .bishop : "♝",
-        .queen :  "♛",
-        .king :   "♚",
-        .pawn :   "♟",
-    ],
-    .white : [
-        .rook :   "♖",
-        .knight : "♘",
-        .bishop : "♗",
-        .queen :  "♕",
-        .king :   "♔",
-        .pawn :   "♙",
-    ]
+
+
+enum MoveOperationOutcome {
+  case Legal, Capturing(Piece), Illegal
+}
+
+let knightMoveChains = [
+  [Position(row: 2, column: 1)],
+  [Position(row: 1, column: 2)],
+  [Position(row: 2, column: -1)],
+  [Position(row: 1, column: -2)],
+  [Position(row: -2, column: 1)],
+  [Position(row: -1, column: 2)],
+  [Position(row: -2, column: -1)],
+  [Position(row: -1, column: -2)],
 ]
+
+let boardRange = 0 ..< kBoardSize
+
+let rookMoveChains = [
+  boardRange.map { value in Position(row: value, column: 0) },
+  boardRange.map { value in Position(row: 0, column: value) },
+  boardRange.map { value in Position(row: -value, column: 0) },
+  boardRange.map { value in Position(row: 0, column: -value) },
+]
+
+let bisopMoveChains = [
+  boardRange.map { value in Position(row: value, column: value) },
+  boardRange.map { value in Position(row: value, column: -value) },
+  boardRange.map { value in Position(row: -value, column: value) },
+  boardRange.map { value in Position(row: -value, column: -value) },
+]
+
+let queenMoveChains = rookMoveChains + bisopMoveChains
+
+let kingMoveChains = [
+  [Position(row: 0, column: 1)],
+  [Position(row: 1, column: 0)],
+  [Position(row: 0, column: -1)],
+  [Position(row: 1, column: -0)],
+  [Position(row: -0, column: 1)],
+  [Position(row: -1, column: 0)],
+  [Position(row: -0, column: -1)],
+  [Position(row: -1, column: -0)],
+]
+
+func moveOutcome(piece: Piece,
+                 endPositoon: Position,
+                 gameState: GameState) -> MoveOperationOutcome {
+  let maxPosition = kBoardSize - 1
+  if endPositoon.row > maxPosition ||
+     endPositoon.row < 0 ||
+     endPositoon.column > maxPosition ||
+     endPositoon.column < 0 {
+    return .Illegal
+  }
+  if let target = gameState.positionToPiece[endPositoon] {
+    if (target.player != piece.player) {
+      return .Capturing(target)
+    } else {
+      return .Illegal
+    }
+  } else {
+    return .Legal
+  }
+}
+
+func movesFromChains(piece: Piece,
+                     moveChains: [[Position]],
+                     gameState: GameState) -> [Move] {
+  guard let startPosition = gameState.pieceToPosition[piece] else {
+    return []
+  }
+  var moves = [Move]()
+  for moveChain in moveChains {
+    for positionDelta in moveChain {
+      let endPosition = startPosition + positionDelta
+      let outcome = moveOutcome(piece: piece, endPositoon: endPosition, gameState: gameState)
+      var shouldContinue = true
+      switch outcome {
+      case .Legal:
+        let move = Move(movedPiece: piece, finalPosition: endPosition, capturedPiece: nil)
+        moves.append(move)
+      case .Capturing(let capturedPiece):
+        let move = Move(movedPiece: piece, finalPosition: endPosition, capturedPiece: capturedPiece)
+        moves.append(move)
+        fallthrough
+      case .Illegal:
+        shouldContinue = false
+      }
+      if (!shouldContinue) {
+        break
+      }
+    }
+    
+  }
+  return moves
+}
+
 
 public func regularInitialPieces() -> [Piece] {
   var pieces: [Piece] = []
@@ -68,8 +143,8 @@ public func regularInitialPieces() -> [Piece] {
 
 struct RegularRules : Rules {
   let boards: Int = kNumberOfBoards
-  let boardWidth: Int = kBoardWidth
-  let boardHeight: Int = kBoardHeight
+  let boardWidth: Int = kBoardSize
+  let boardHeight: Int = kBoardSize
   let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
@@ -80,54 +155,44 @@ struct RegularRules : Rules {
     guard let position = gameState.pieceToPosition[piece] else {
       return []
     }
-    var moves: [Move] = []
     switch piece.type {
     case RegularPiece.rook.rawValue:
-      var consideredPosition = position.withColoumn(position.column + 1)
-      while (consideredPosition.column < kBoardWidth) {
-        if let target = gameState.positionToPiece[consideredPosition] {
-          if (target.player != piece.player) {
-            moves.append(Move(movedPiece: piece, finalPosition: consideredPosition, capturedPiece: target))
-          }
-          break;
-        } else {
-          moves.append(Move(movedPiece: piece, finalPosition: consideredPosition, capturedPiece: nil))
-        }
-        consideredPosition = consideredPosition.withColoumn(consideredPosition.column + 1)
-      }
-      break
+     return movesFromChains(piece: piece, moveChains: rookMoveChains, gameState: gameState)
+    case RegularPiece.knight.rawValue:
+      return movesFromChains(piece: piece, moveChains: knightMoveChains, gameState: gameState)
+    case RegularPiece.bishop.rawValue:
+      return movesFromChains(piece: piece, moveChains: bisopMoveChains, gameState: gameState)
+    case RegularPiece.queen.rawValue:
+      return movesFromChains(piece: piece, moveChains: queenMoveChains, gameState: gameState)
+    case RegularPiece.king.rawValue:
+      return movesFromChains(piece: piece, moveChains: kingMoveChains, gameState: gameState)
     case RegularPiece.pawn.rawValue:
+      var moves: [Move] = []
       let yDirection = piece.startingPosition.row > (self.boardHeight / 2) ? -1 : 1;
-      let consideredPosition1 = position.withRow(position.row + yDirection)
+      let forwards = Position(row: yDirection, column: 0)
+      let consideredPosition1 = position + forwards
       if gameState.positionToPiece[consideredPosition1] == nil {
           moves.append(Move(movedPiece: piece, finalPosition: consideredPosition1, capturedPiece: nil))
-        
         if (position == piece.startingPosition) {
-          let consideredPosition2 = consideredPosition1.withRow(consideredPosition1.row + yDirection)
+          let consideredPosition2 = consideredPosition1 + forwards
           if gameState.positionToPiece[consideredPosition2] == nil {
             moves.append(Move(movedPiece: piece, finalPosition: consideredPosition2, capturedPiece: nil))
           }
         }
       }
-      
-      let consideredPosition3 = consideredPosition1.withColoumn(consideredPosition1.column + 1)
-      if let target = gameState.positionToPiece[consideredPosition3] {
-        if (target.player != piece.player) {
-          moves.append(Move(movedPiece: piece, finalPosition: consideredPosition3, capturedPiece: target))
+      let possibleCaptures = [ Position(row: yDirection, column: 1), Position(row: yDirection, column: -1) ]
+      for delta in possibleCaptures {
+      let consideredPosition3 = position + delta
+        if let target = gameState.positionToPiece[consideredPosition3] {
+          if (target.player != piece.player) {
+            moves.append(Move(movedPiece: piece, finalPosition: consideredPosition3, capturedPiece: target))
+          }
         }
       }
-      
-      let consideredPosition4 = consideredPosition1.withColoumn(consideredPosition1.column - 1)
-      if let target = gameState.positionToPiece[consideredPosition4] {
-        if (target.player != piece.player) {
-          moves.append(Move(movedPiece: piece, finalPosition: consideredPosition4, capturedPiece: target))
-        }
-      }
-      break;
+      return moves
     default:
-      NSLog("Big TODO")
+      return []
     }
-   return moves
   }
   
   func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome {
