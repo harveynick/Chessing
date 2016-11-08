@@ -23,11 +23,6 @@ let fealty : [(RegularPiece, RegularPiece)] = [
     (.king, .rook) ]
 
 
-
-enum MoveOperationOutcome {
-  case Legal, Capturing(Piece), Illegal
-}
-
 let knightMoveChains = [
   [Position(row: 2, column: 1)],
   [Position(row: 1, column: 2)],
@@ -67,6 +62,10 @@ let kingMoveChains = [
   [Position(row: -0, column: -1)],
   [Position(row: -1, column: -0)],
 ]
+
+enum MoveOperationOutcome {
+  case Legal, Capturing(Piece), Illegal
+}
 
 func moveOutcome(piece: Piece,
                  endPositoon: Position,

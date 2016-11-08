@@ -128,7 +128,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
       return;
     }
     let gameController = self.gameState.rules
-    let size = collectionView.bounds.size;
+    let size =  UIEdgeInsetsInsetRect(collectionView.bounds, collectionView.contentInset).size;
     let minDimension = min(size.width, size.height)
     let tileSize = floor(minDimension / 8)
     let leftPadding = floor((size.width - (tileSize * 8)) / 2)
@@ -314,6 +314,7 @@ class ChessCollectionViewController : UICollectionViewController {
       for selectedIndex in indexPathsForSelectedItems {
         collectionView.deselectItem(at: selectedIndex, animated: false)
       }
+      self.navigationItem.rightBarButtonItem = nil
     }
     let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
@@ -327,7 +328,7 @@ class ChessCollectionViewController : UICollectionViewController {
           if selectedIndex.section == SectionType.threat.rawValue {
             collectionView.deselectItem(at: selectedIndex, animated: false)
           }
-          
+          self.navigationItem.rightBarButtonItem = nil
         }
       }
       return
@@ -341,6 +342,7 @@ class ChessCollectionViewController : UICollectionViewController {
         }
          collectionView.deselectItem(at: selectedIndex, animated: false)
        }
+        self.navigationItem.rightBarButtonItem = nil
       }
       selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
     } else {
@@ -373,6 +375,7 @@ class ChessCollectionViewController : UICollectionViewController {
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+      self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Play", style: .plain, target: nil, action: nil)
       return
     }
     let selectedPiece : Piece?
@@ -386,6 +389,7 @@ class ChessCollectionViewController : UICollectionViewController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    self.navigationItem.rightBarButtonItem = nil
     if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
       return
     }
