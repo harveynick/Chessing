@@ -9,7 +9,6 @@ enum RegularPiece : PieceType {
     case pawn = "P"
 }
 
-let kNumberOfBoards : Int = 1
 let kBoardSize : Int = 8
 
 let fealty : [(RegularPiece, RegularPiece)] = [
@@ -141,9 +140,7 @@ public func regularInitialPieces() -> [Piece] {
 }
 
 struct RegularRules : Rules {
-  let boards: Int = kNumberOfBoards
-  let boardWidth: Int = kBoardSize
-  let boardHeight: Int = kBoardSize
+  let boardSize: Int = kBoardSize
   let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
@@ -167,7 +164,7 @@ struct RegularRules : Rules {
       return movesFromChains(piece: piece, moveChains: kingMoveChains, gameState: gameState)
     case RegularPiece.pawn.rawValue:
       var moves: [Move] = []
-      let yDirection = piece.startingPosition.row > (self.boardHeight / 2) ? -1 : 1;
+      let yDirection = piece.startingPosition.row > (self.boardSize / 2) ? -1 : 1;
       let forwards = Position(row: yDirection, column: 0)
       let consideredPosition1 = position + forwards
       if gameState.positionToPiece[consideredPosition1] == nil {

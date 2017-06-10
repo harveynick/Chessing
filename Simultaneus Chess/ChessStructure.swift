@@ -1,49 +1,39 @@
 // Mark: Position
 
 public struct Position {
-  let board: Int
   let row: Int
   let column: Int
   
   init(row: Int, column: Int) {
-      self.board = 0
-      self.row = row
-      self.column = column
-  }
-  
-  init(board: Int, row: Int, column: Int) {
-      self.board = board
       self.row = row
       self.column = column
   }
   
   func withRow(_ row: Int) -> Position {
-    return Position(board: board, row: row, column: self.column)
+    return Position(row: row, column: self.column)
   }
   
   func withColoumn(_ column: Int) -> Position {
-    return Position(board: board, row: self.row, column: column)
+    return Position(row: self.row, column: column)
   }
 }
 
 extension Position : Hashable {
   public var hashValue: Int {
     get {
-      return (Int)((row << 1) + (column << 4)) + Int(board)
+      return (Int)((row << 1) + (column << 4))
     }
   }
 }
 
 extension Position : Equatable {}
 public func ==(lhs: Position, rhs: Position) -> Bool {
-    return lhs.board == rhs.board &&
-        lhs.row == rhs.row &&
+    return lhs.row == rhs.row &&
         lhs.column == rhs.column
 }
 
 func +(left: Position, right: Position) -> Position {
-  return Position(board: left.board + right.board,
-                  row: left.row + right.row,
+  return Position(row: left.row + right.row,
                   column: left.column + right.column)
 }
 
@@ -149,10 +139,7 @@ public struct MoveMatrix {
 // Mark: Rules
 
 public protocol Rules {
-  var boards: Int { get }
-  var boardWidth: Int { get }
-  var boardHeight: Int { get }
-  var players : UInt { get }
+  var boardSize: Int { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
   func generateMoves(_ piece: Piece, gameState: GameState) -> [Move]

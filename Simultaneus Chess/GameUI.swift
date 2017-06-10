@@ -273,7 +273,7 @@ class ChessCollectionViewController : UICollectionViewController {
                                numberOfItemsInSection section: Int) -> Int {
     let rules = self.gameState.rules
     if section == SectionType.board.rawValue ||  section == SectionType.threat.rawValue {
-      return rules.boards * rules.boardHeight * rules.boardWidth
+      return rules.boardSize * rules.boardSize
     } else {
       return rules.pieces.count;
     }
@@ -284,8 +284,8 @@ class ChessCollectionViewController : UICollectionViewController {
     if ((indexPath as NSIndexPath).section == SectionType.board.rawValue) {
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessBoardCell.reuseIdentifier, for: indexPath)
       let gameController = self.gameState.rules
-      let column = (indexPath as NSIndexPath).item % gameController.boardWidth;
-      let row = ((indexPath as NSIndexPath).item - column) / gameController.boardHeight
+      let column = (indexPath as NSIndexPath).item % gameController.boardSize;
+      let row = ((indexPath as NSIndexPath).item - column) / gameController.boardSize
       cell.contentView.backgroundColor = ((row + column) % 2 == 0) ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.9, alpha: 1)
       return cell
     } else if ((indexPath as NSIndexPath).section == SectionType.piece.rawValue) {
