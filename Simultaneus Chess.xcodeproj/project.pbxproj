@@ -12,7 +12,7 @@
 		F93ABF691CDFE0EA0064A990 /* Simultaneus_ChessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */; };
 		F9A0DC821D4E7B1F00E5B57F /* GameUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */; };
 		F9A0DC861D4EAC4900E5B57F /* ChessStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */; };
-		F9A0DC871D4EAC4900E5B57F /* RegularSimultaneousChess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC851D4EAC4900E5B57F /* RegularSimultaneousChess.swift */; };
+		F9A0DC871D4EAC4900E5B57F /* SynchronisticChess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */; };
 		F9A0DC891D4EBAE400E5B57F /* ChessPrinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +36,7 @@
 		F93ABF6A1CDFE0EA0064A990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUI.swift; sourceTree = "<group>"; };
 		F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChessStructure.swift; sourceTree = "<group>"; };
-		F9A0DC851D4EAC4900E5B57F /* RegularSimultaneousChess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegularSimultaneousChess.swift; sourceTree = "<group>"; };
+		F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronisticChess.swift; sourceTree = "<group>"; };
 		F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChessPrinting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */,
-				F9A0DC851D4EAC4900E5B57F /* RegularSimultaneousChess.swift */,
+				F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */,
 				F93ABF511CDFE0E90064A990 /* AppDelegate.swift */,
 				F93ABF5A1CDFE0E90064A990 /* Assets.xcassets */,
 				F93ABF5F1CDFE0EA0064A990 /* Info.plist */,
@@ -202,7 +202,7 @@
 			files = (
 				F93ABF521CDFE0E90064A990 /* AppDelegate.swift in Sources */,
 				F9A0DC861D4EAC4900E5B57F /* ChessStructure.swift in Sources */,
-				F9A0DC871D4EAC4900E5B57F /* RegularSimultaneousChess.swift in Sources */,
+				F9A0DC871D4EAC4900E5B57F /* SynchronisticChess.swift in Sources */,
 				F9A0DC891D4EBAE400E5B57F /* ChessPrinting.swift in Sources */,
 				F9A0DC821D4E7B1F00E5B57F /* GameUI.swift in Sources */,
 			);
