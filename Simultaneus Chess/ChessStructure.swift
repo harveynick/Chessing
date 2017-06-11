@@ -146,6 +146,7 @@ public enum GameStatus {
 // Mark: Outcome
 
 public struct Outcome {
+  let requestedMoves: [Move]
   let performedMoves: [Move]
   let finalState: GameState
   let status : GameStatus
@@ -164,13 +165,22 @@ public protocol Rules {
   var pieces : [Piece] { get }
   var initialState: GameState { get }
   func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move]
+  func isChecking(move: Move) -> Bool
   func resolve(moves: [Move], in gameState: GameState) -> Outcome
 }
 
 public extension Rules {
-  func legalMoves(gameState: GameState) -> [Piece:Move] {
-    
-    return [:]
+  
+  func possibleMoves(for gameState: GameState, excluding: [Player] = []) -> [Move] {
+    return pieces
+      .filter { !gameState.capturedPeices.contains($0) && !excluding.contains($0.player) }
+      .map { possibleMoves(for: $0, in: gameState) }
+      .reduce([]) { $0 + $1 }
+  }
+  
+  func legalMoves(in gameState: GameState) -> [Move] {
+    return possibleMoves(for: gameState)
+      .filter { possibleMoves(for: gameState.apply(move: $0), excluding: [$0.movedPiece.player]).first(where:isChecking) == nil}
   }
 }
 
@@ -195,7 +205,8 @@ public struct Game {
   }
 
   init(rules: Rules) {
-    let initialOutcome = Outcome(performedMoves: [],
+    let initialOutcome = Outcome(requestedMoves:[],
+                                 performedMoves: [],
                                  finalState: rules.initialState,
                                  status: .ongoing)
     self = Game(rules:rules, outcomes:[initialOutcome])

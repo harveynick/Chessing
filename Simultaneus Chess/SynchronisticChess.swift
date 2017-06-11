@@ -67,16 +67,16 @@ enum MoveOperationOutcome {
 }
 
 func moveOutcome(piece: Piece,
-                 endPositoon: Position,
+                 endPosition: Position,
                  gameState: GameState) -> MoveOperationOutcome {
   let maxPosition = kBoardSize - 1
-  if endPositoon.row > maxPosition ||
-     endPositoon.row < 0 ||
-     endPositoon.column > maxPosition ||
-     endPositoon.column < 0 {
+  if endPosition.row > maxPosition ||
+     endPosition.row < 0 ||
+     endPosition.column > maxPosition ||
+     endPosition.column < 0 {
     return .Illegal
   }
-  if let target = gameState.positionToPiece[endPositoon] {
+  if let target = gameState.positionToPiece[endPosition] {
     if (target.player != piece.player) {
       return .Capturing(target)
     } else {
@@ -97,7 +97,7 @@ func movesFromChains(piece: Piece,
   for moveChain in moveChains {
     for positionDelta in moveChain {
       let endPosition = startPosition + positionDelta
-      let outcome = moveOutcome(piece: piece, endPositoon: endPosition, gameState: gameState)
+      let outcome = moveOutcome(piece: piece, endPosition: endPosition, gameState: gameState)
       var shouldContinue = true
       switch outcome {
       case .Legal:
@@ -191,9 +191,13 @@ struct RegularRules : Rules {
     }
   }
   
+  func isChecking(move: Move) -> Bool {
+    return move.movedPiece.type == RegularPiece.king.rawValue
+  }
+  
   func resolve(moves: [Move], in gameState: GameState) -> Outcome {
     // TODO: Actually implement this.
-    return Outcome(performedMoves: moves, finalState: gameState, status: .ongoing)
+    return Outcome(requestedMoves: moves, performedMoves: moves, finalState: gameState, status: .ongoing)
   }
 }
 
