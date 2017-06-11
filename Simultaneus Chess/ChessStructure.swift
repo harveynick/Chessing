@@ -124,9 +124,18 @@ public func ==(lhs: GameState, rhs: GameState) -> Bool {
 
 // Mark: Outcome
 
+public enum GameStatus {
+  case ongoing
+  case checked([Player])
+  case checkmated([Player])
+  case stalemated([Player])
+  case resigned([Player])
+}
+
 public struct Outcome {
-    let performedMoves: Dictionary<Player, Move>
-    let finalState: GameState
+  let performedMoves: Dictionary<Player, Move>
+  let finalState: GameState
+  let status : GameStatus
 }
 
 // Mark: MoveMatrix
@@ -142,7 +151,7 @@ public protocol Rules {
   var boardSize: Int { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
-  func generateMoves(_ piece: Piece, gameState: GameState) -> [Move]
+  func possibleMoves(_ piece: Piece, gameState: GameState) -> [Move]
   func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome
 }
 
@@ -167,9 +176,9 @@ public struct Game {
   }
 
   init(rules: Rules) {
-    let initialOutcome = Outcome(
-      performedMoves: [:],
-          finalState: rules.initialState)
+    let initialOutcome = Outcome(performedMoves: [:],
+                                 finalState: rules.initialState,
+                                 status: .ongoing)
     self = Game(rules:rules, outcomes:[initialOutcome])
   }
     

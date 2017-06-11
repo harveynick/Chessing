@@ -143,7 +143,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     
     let threatenedPositons : [Position]
     if let selectedPiece = self.selectedPiece {
-      let moves = self.gameState.rules.generateMoves(selectedPiece, gameState:gameState)
+      let moves = self.gameState.rules.possibleMoves(selectedPiece, gameState:gameState)
       threatenedPositons = moves.map { move in move.finalPosition }
     } else {
       threatenedPositons = []
@@ -367,7 +367,7 @@ class ChessCollectionViewController : UICollectionViewController {
     }
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
       let selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
-      let moves = self.gameState.rules.generateMoves(selectedPiece, gameState:gameState)
+      let moves = self.gameState.rules.possibleMoves(selectedPiece, gameState:gameState)
       return moves.count > 0
     }
     return false

@@ -147,7 +147,7 @@ struct RegularRules : Rules {
     return GameState(rules: self, startingPieces: self.pieces)
   }
     
-  func generateMoves(_ piece: Piece, gameState: GameState) -> [Move] {
+  func possibleMoves(_ piece: Piece, gameState: GameState) -> [Move] {
     guard let position = gameState.pieceToPosition[piece] else {
       return []
     }
@@ -193,7 +193,7 @@ struct RegularRules : Rules {
   
   func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome {
     // TODO: Actually implement this.
-    return Outcome(performedMoves: moveChoices, finalState: gameState)
+    return Outcome(performedMoves: moveChoices, finalState: gameState, status: .ongoing)
   }
 }
 
