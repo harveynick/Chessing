@@ -12,8 +12,8 @@ extension Position : CustomStringConvertible {
 extension Move : CustomStringConvertible {
   public var description : String {
     get {
-      var output = "\(self.movedPiece) -> \(self.finalPosition)"
-      if let capturedPiece = self.capturedPiece {
+      var output = "\(self.moved) -> \(self.finalPosition)"
+      if let capturedPiece = self.captured {
         output += "(\(capturedPiece))"
       }
       return output;

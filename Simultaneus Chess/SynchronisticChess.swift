@@ -101,10 +101,10 @@ func movesFromChains(piece: Piece,
       var shouldContinue = true
       switch outcome {
       case .Legal:
-        let move = Move(movedPiece: piece, finalPosition: endPosition, capturedPiece: nil)
+        let move = Move(moved: piece, finalPosition: endPosition, captured: nil)
         moves.append(move)
       case .Capturing(let capturedPiece):
-        let move = Move(movedPiece: piece, finalPosition: endPosition, capturedPiece: capturedPiece)
+        let move = Move(moved: piece, finalPosition: endPosition, captured: capturedPiece)
         moves.append(move)
         fallthrough
       case .Illegal:
@@ -168,11 +168,11 @@ struct RegularRules : Rules {
       let forwards = Position(row: yDirection, column: 0)
       let consideredPosition1 = position + forwards
       if gameState.positionToPiece[consideredPosition1] == nil {
-          moves.append(Move(movedPiece: piece, finalPosition: consideredPosition1, capturedPiece: nil))
+          moves.append(Move(moved: piece, finalPosition: consideredPosition1, captured: nil))
         if (position == piece.startingPosition) {
           let consideredPosition2 = consideredPosition1 + forwards
           if gameState.positionToPiece[consideredPosition2] == nil {
-            moves.append(Move(movedPiece: piece, finalPosition: consideredPosition2, capturedPiece: nil))
+            moves.append(Move(moved: piece, finalPosition: consideredPosition2, captured: nil))
           }
         }
       }
@@ -181,7 +181,7 @@ struct RegularRules : Rules {
       let consideredPosition3 = position + delta
         if let target = gameState.positionToPiece[consideredPosition3] {
           if (target.player != piece.player) {
-            moves.append(Move(movedPiece: piece, finalPosition: consideredPosition3, capturedPiece: target))
+            moves.append(Move(moved: piece, finalPosition: consideredPosition3, captured: target))
           }
         }
       }
@@ -192,10 +192,12 @@ struct RegularRules : Rules {
   }
   
   func isChecking(move: Move) -> Bool {
-    return move.movedPiece.type == RegularPiece.king.rawValue
+    return move.moved.type == RegularPiece.king.rawValue
   }
   
   func resolve(moves: [Move], in gameState: GameState) -> Outcome {
+    
+    
     // TODO: Actually implement this.
     return Outcome(requestedMoves: moves, performedMoves: moves, finalState: gameState, status: .ongoing)
   }

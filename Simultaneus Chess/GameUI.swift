@@ -273,7 +273,7 @@ class ChessCollectionViewController : UICollectionViewController {
                                numberOfItemsInSection section: Int) -> Int {
     let rules = self.game.rules
     if section == SectionType.board.rawValue ||  section == SectionType.threat.rawValue {
-      return rules.initialState.boardSize ^ 2
+      return rules.initialState.boardSize * rules.initialState.boardSize
     } else {
       return rules.pieces.count;
     }

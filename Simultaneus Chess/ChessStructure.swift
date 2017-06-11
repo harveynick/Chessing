@@ -69,16 +69,16 @@ public func ==(lhs: Piece, rhs: Piece) -> Bool {
 // Mark: Move
 
 public struct Move {
-  let movedPiece: Piece
+  let moved: Piece
   let finalPosition: Position
-  let capturedPiece: Piece?
+  let captured: Piece?
 }
 
 extension Move : Equatable {}
 public func ==(lhs: Move, rhs: Move) -> Bool {
-    return lhs.movedPiece == rhs.movedPiece &&
+    return lhs.moved == rhs.moved &&
         lhs.finalPosition == rhs.finalPosition &&
-        lhs.capturedPiece == rhs.capturedPiece
+        lhs.captured == rhs.captured
 }
 
 // Mark: GameState
@@ -115,13 +115,15 @@ public struct GameState {
     self.capturedPeices = newCaptures
   }
   
-  func apply(move: Move) -> GameState {
+  func apply(moves: [Move]) -> GameState {
     var newPositions = pieceToPosition
-    newPositions[move.movedPiece] = move.finalPosition
     var captures = capturedPeices
-    if let capture = move.capturedPiece {
-      captures.append(capture)
-      newPositions.removeValue(forKey: capture)
+    for move in moves {
+      newPositions[move.moved] = move.finalPosition
+      if let capture = move.captured {
+        captures.append(capture)
+        newPositions.removeValue(forKey: capture)
+      }
     }
     return GameState(boardSize: boardSize, newPositions: newPositions, newCaptures: captures)
   }
@@ -180,7 +182,7 @@ public extension Rules {
   
   func legalMoves(in gameState: GameState) -> [Move] {
     return possibleMoves(for: gameState)
-      .filter { possibleMoves(for: gameState.apply(move: $0), excluding: [$0.movedPiece.player]).first(where:isChecking) == nil}
+      .filter { possibleMoves(for: gameState.apply(moves: [$0]), excluding: [$0.moved.player]).first(where:isChecking) == nil}
   }
 }
 
