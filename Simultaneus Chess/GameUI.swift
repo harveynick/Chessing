@@ -104,11 +104,11 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
   fileprivate var boardRects : [CGRect]?
   fileprivate var peiceRects : [CGRect]?
   fileprivate var threats : [Bool]?
-  fileprivate let gameState: GameState
+  fileprivate let game: Game
   fileprivate let selectedPiece: Piece?
   
-  init(gameState: GameState, selectedPiece: Piece?) {
-    self.gameState = gameState
+  init(game: Game, selectedPiece: Piece?) {
+    self.game = game
     self.selectedPiece = selectedPiece
     super.init()
     self.register(ChessBoardCell.self, forDecorationViewOfKind: ChessBoardCell.reuseIdentifier)
@@ -127,7 +127,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     guard let collectionView = self.collectionView else {
       return;
     }
-    let gameController = self.gameState.rules
+    let gameController = self.game.rules
     let size =  UIEdgeInsetsInsetRect(collectionView.bounds, collectionView.contentInset).size;
     let minDimension = min(size.width, size.height)
     let tileSize = floor(minDimension / 8)
@@ -143,7 +143,7 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     
     let threatenedPositons : [Position]
     if let selectedPiece = self.selectedPiece {
-      let moves = self.gameState.rules.possibleMoves(selectedPiece, gameState:gameState)
+      let moves = self.game.rules.possibleMoves(for: selectedPiece, in:game.currentState)
       threatenedPositons = moves.map { move in move.finalPosition }
     } else {
       threatenedPositons = []
@@ -158,8 +158,8 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
       boardRects.append(rectForRow(row, column: column))
       threats.append(threatenedPositons.contains(Position(row: row, column: column)))
     }
-    for peice in self.gameState.rules.pieces {
-      if let position = self.gameState.pieceToPosition[peice] {
+    for peice in self.game.rules.pieces {
+      if let position = self.game.currentState.pieceToPosition[peice] {
         peiceRects.append(rectForRow(Int(position.row), column: Int(position.column)))
       } else {
         // handle taken peices
@@ -234,13 +234,13 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
 
 class ChessCollectionViewController : UICollectionViewController {
   
-  var gameState : GameState
+  var game: Game
   let player : Player
   
-  init(gameState : GameState, player : Player) {
-    self.gameState = gameState
+  init(game: Game, player : Player) {
+    self.game = game
     self.player = player
-    super.init(collectionViewLayout: ChessCollectionViewLayout(gameState:gameState, selectedPiece:nil))
+    super.init(collectionViewLayout: ChessCollectionViewLayout(game:game, selectedPiece:nil))
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -271,9 +271,9 @@ class ChessCollectionViewController : UICollectionViewController {
     
   override func collectionView(_ collectionView: UICollectionView,
                                numberOfItemsInSection section: Int) -> Int {
-    let rules = self.gameState.rules
+    let rules = self.game.rules
     if section == SectionType.board.rawValue ||  section == SectionType.threat.rawValue {
-      return rules.boardSize * rules.boardSize
+      return rules.initialState.boardSize ^ 2
     } else {
       return rules.pieces.count;
     }
@@ -283,15 +283,14 @@ class ChessCollectionViewController : UICollectionViewController {
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     if ((indexPath as NSIndexPath).section == SectionType.board.rawValue) {
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessBoardCell.reuseIdentifier, for: indexPath)
-      let gameController = self.gameState.rules
-      let column = (indexPath as NSIndexPath).item % gameController.boardSize;
-      let row = ((indexPath as NSIndexPath).item - column) / gameController.boardSize
+      let column = (indexPath as NSIndexPath).item % self.game.currentState.boardSize;
+      let row = ((indexPath as NSIndexPath).item - column) / self.game.currentState.boardSize
       cell.contentView.backgroundColor = ((row + column) % 2 == 0) ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.9, alpha: 1)
       return cell
     } else if ((indexPath as NSIndexPath).section == SectionType.piece.rawValue) {
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessPieceCell.reuseIdentifier, for: indexPath)
       let pieceCell = cell as! ChessPieceCell
-      let piece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      let piece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
       pieceCell.designation = kPrettyDesignations[String(piece.type)]
       pieceCell.teamColor = (piece.player == 0) ? UIColor.blue : UIColor.red
       return cell
@@ -307,7 +306,7 @@ class ChessCollectionViewController : UICollectionViewController {
       return true
     }
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      let selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
       return selectedPiece.player == self.player
     }
     if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
@@ -316,7 +315,7 @@ class ChessCollectionViewController : UICollectionViewController {
       }
       self.navigationItem.rightBarButtonItem = nil
     }
-    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
+    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
     return false
   }
@@ -344,12 +343,12 @@ class ChessCollectionViewController : UICollectionViewController {
        }
         self.navigationItem.rightBarButtonItem = nil
       }
-      selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
     } else {
       selectedPiece = nil
     }
     
-    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
+    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
   }
   
@@ -357,7 +356,7 @@ class ChessCollectionViewController : UICollectionViewController {
     if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
       return
     }
-    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
+    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
   }
   
@@ -366,8 +365,8 @@ class ChessCollectionViewController : UICollectionViewController {
       return true
     }
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      let selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
-      let moves = self.gameState.rules.possibleMoves(selectedPiece, gameState:gameState)
+      let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+      let moves = self.game.rules.possibleMoves(for: selectedPiece, in:game.currentState)
       return moves.count > 0
     }
     return false
@@ -380,11 +379,11 @@ class ChessCollectionViewController : UICollectionViewController {
     }
     let selectedPiece : Piece?
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      selectedPiece = self.gameState.rules.pieces[(indexPath as NSIndexPath).item]
+      selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
     } else {
       selectedPiece = nil
     }
-    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:selectedPiece)
+    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
   }
   
@@ -393,7 +392,7 @@ class ChessCollectionViewController : UICollectionViewController {
     if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
       return
     }
-    let newLayout = ChessCollectionViewLayout(gameState:self.gameState, selectedPiece:nil)
+    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
     collectionView.setCollectionViewLayout(newLayout, animated: false)
   }
 }

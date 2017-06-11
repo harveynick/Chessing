@@ -85,13 +85,13 @@ public func ==(lhs: Move, rhs: Move) -> Bool {
 
 public struct GameState {
 
-  let rules: Rules
+  let boardSize: Int
   let pieceToPosition: [Piece:Position]
   let positionToPiece: [Position:Piece]
   let capturedPeices: [Piece]
     
-  init(rules: Rules, startingPieces: [Piece]) {
-    self.rules = rules
+  init(boardSize: Int, startingPieces: [Piece]) {
+    self.boardSize = boardSize
     var pieceToPosition : [Piece:Position] = [:]
     var positionToPiece : [Position:Piece] = [:]
     for piece in startingPieces {
@@ -104,8 +104,8 @@ public struct GameState {
     self.capturedPeices = []
   }
   
-  init(rules: Rules, newPositions: [Piece:Position], newCaptures: [Piece]) {
-    self.rules = rules
+  init(boardSize: Int, newPositions: [Piece:Position], newCaptures: [Piece]) {
+    self.boardSize = boardSize
     self.pieceToPosition = newPositions
     var positionToPiece : [Position:Piece] = [:]
     for (piece, position) in newPositions {
@@ -113,6 +113,17 @@ public struct GameState {
     }
     self.positionToPiece = positionToPiece
     self.capturedPeices = newCaptures
+  }
+  
+  func apply(move: Move) -> GameState {
+    var newPositions = pieceToPosition
+    newPositions[move.movedPiece] = move.finalPosition
+    var captures = capturedPeices
+    if let capture = move.capturedPiece {
+      captures.append(capture)
+      newPositions.removeValue(forKey: capture)
+    }
+    return GameState(boardSize: boardSize, newPositions: newPositions, newCaptures: captures)
   }
 }
 
@@ -122,7 +133,7 @@ public func ==(lhs: GameState, rhs: GameState) -> Bool {
       lhs.capturedPeices == rhs.capturedPeices
 }
 
-// Mark: Outcome
+// Mark: GameStatus
 
 public enum GameStatus {
   case ongoing
@@ -132,8 +143,10 @@ public enum GameStatus {
   case resigned([Player])
 }
 
+// Mark: Outcome
+
 public struct Outcome {
-  let performedMoves: Dictionary<Player, Move>
+  let performedMoves: [Move]
   let finalState: GameState
   let status : GameStatus
 }
@@ -148,11 +161,17 @@ public struct MoveMatrix {
 // Mark: Rules
 
 public protocol Rules {
-  var boardSize: Int { get }
   var pieces : [Piece] { get }
   var initialState: GameState { get }
-  func possibleMoves(_ piece: Piece, gameState: GameState) -> [Move]
-  func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome
+  func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move]
+  func resolve(moves: [Move], in gameState: GameState) -> Outcome
+}
+
+public extension Rules {
+  func legalMoves(gameState: GameState) -> [Piece:Move] {
+    
+    return [:]
+  }
 }
 
 // Mark: Game
@@ -176,7 +195,7 @@ public struct Game {
   }
 
   init(rules: Rules) {
-    let initialOutcome = Outcome(performedMoves: [:],
+    let initialOutcome = Outcome(performedMoves: [],
                                  finalState: rules.initialState,
                                  status: .ongoing)
     self = Game(rules:rules, outcomes:[initialOutcome])

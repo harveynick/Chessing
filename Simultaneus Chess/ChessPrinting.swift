@@ -33,15 +33,15 @@ extension GameState : CustomStringConvertible {
   public var description : String {
     get {
       var breakLine = "+"
-      for _ in 0 ..< self.rules.boardSize {
+      for _ in 0 ..< self.boardSize {
         breakLine += "---+"
       }
       breakLine += "\n"
       
       var output = breakLine;
-      for row in 0 ..< self.rules.boardSize {
+      for row in 0 ..< self.boardSize {
         output += "|"
-        for column in 0 ..< self.rules.boardSize {
+        for column in 0 ..< self.boardSize {
           let thisPosition = Position(row: row, column: column)
           if let piece = self.positionToPiece[thisPosition] {
             output += "\(piece)\(piece.type) "
@@ -62,7 +62,7 @@ extension Outcome : CustomStringConvertible {
   public var description : String {
     get {
       var output = performedMoves
-        .map { _, move in move.description + "\n" }
+        .map { move in move.description + "\n" }
         .reduce("") { initial, next in initial + next }
       output += "\n" + finalState.description
       return output

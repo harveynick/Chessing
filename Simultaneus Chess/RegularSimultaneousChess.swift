@@ -144,10 +144,10 @@ struct RegularRules : Rules {
   let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces()
   var initialState : GameState {
-    return GameState(rules: self, startingPieces: self.pieces)
+    return GameState(boardSize: kBoardSize, startingPieces: self.pieces)
   }
     
-  func possibleMoves(_ piece: Piece, gameState: GameState) -> [Move] {
+  func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move] {
     guard let position = gameState.pieceToPosition[piece] else {
       return []
     }
@@ -191,9 +191,9 @@ struct RegularRules : Rules {
     }
   }
   
-  func resolveMoves(_ gameState: GameState, moveChoices: Dictionary<Player, Move>) -> Outcome {
+  func resolve(moves: [Move], in gameState: GameState) -> Outcome {
     // TODO: Actually implement this.
-    return Outcome(performedMoves: moveChoices, finalState: gameState, status: .ongoing)
+    return Outcome(performedMoves: moves, finalState: gameState, status: .ongoing)
   }
 }
 
