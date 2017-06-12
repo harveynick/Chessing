@@ -291,7 +291,7 @@ class ChessCollectionViewController : UICollectionViewController {
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessPieceCell.reuseIdentifier, for: indexPath)
       let pieceCell = cell as! ChessPieceCell
       let piece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-      pieceCell.designation = kPrettyDesignations[String(piece.type)]
+      pieceCell.designation = kPrettyDesignations[piece.type.signifier]
       pieceCell.teamColor = (piece.player == 0) ? UIColor.blue : UIColor.red
       return cell
     } else {

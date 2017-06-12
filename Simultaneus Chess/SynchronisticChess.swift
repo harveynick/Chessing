@@ -1,17 +1,9 @@
 import Foundation
 
-enum RegularPiece : PieceType {
-    case rook = "R"
-    case knight = "N"
-    case bishop = "B"
-    case queen = "Q"
-    case king = "K"
-    case pawn = "P"
-}
 
-let kBoardSize : Int = 8
+let kBoardSize = 8
 
-let fealty : [(RegularPiece, RegularPiece)] = [
+let fealty : [(PieceType, PieceType)] = [
     (.queen, .rook),
     (.queen, .knight),
     (.queen, .bishop),
@@ -126,12 +118,12 @@ public func regularInitialPieces() -> [Piece] {
     for (column, (belongsType, pieceType)) in fealty.enumerated() {
         pieces.append(Piece(
             player: player,
-            type:pieceType.rawValue,
+            type:pieceType,
             designation:"\(player)\(belongsType)\(pieceType)",
             startingPosition:Position(row: (player == 0) ? 0 : 7, column: column)))
         pieces.append(Piece(
             player: player,
-            type:RegularPiece.pawn.rawValue,
+            type:.pawn,
             designation:"\(player)\(belongsType)\(pieceType)",
             startingPosition:Position(row: (player == 0) ? 1 : 6, column: column)))
     }
@@ -152,17 +144,17 @@ struct RegularRules : Rules {
       return []
     }
     switch piece.type {
-    case RegularPiece.rook.rawValue:
+    case .rook:
      return movesFromChains(piece: piece, moveChains: rookMoveChains, gameState: gameState)
-    case RegularPiece.knight.rawValue:
+    case .knight:
       return movesFromChains(piece: piece, moveChains: knightMoveChains, gameState: gameState)
-    case RegularPiece.bishop.rawValue:
+    case .bishop:
       return movesFromChains(piece: piece, moveChains: bisopMoveChains, gameState: gameState)
-    case RegularPiece.queen.rawValue:
+    case .queen:
       return movesFromChains(piece: piece, moveChains: queenMoveChains, gameState: gameState)
-    case RegularPiece.king.rawValue:
+    case .king:
       return movesFromChains(piece: piece, moveChains: kingMoveChains, gameState: gameState)
-    case RegularPiece.pawn.rawValue:
+    case .pawn:
       var moves: [Move] = []
       let yDirection = piece.startingPosition.row > (self.boardSize / 2) ? -1 : 1;
       let forwards = Position(row: yDirection, column: 0)
@@ -186,20 +178,40 @@ struct RegularRules : Rules {
         }
       }
       return moves
-    default:
-      return []
     }
   }
   
   func isChecking(move: Move) -> Bool {
-    return move.moved.type == RegularPiece.king.rawValue
+    return move.captured?.type == .king
   }
   
-  func resolve(moves: [Move], in gameState: GameState) -> Outcome {
+  func resolve(moves: [Move], in gameState: GameState) -> Outcome? {
+    let move1 = moves[0]
+    let move2 = moves[1]
+    guard move1.moved.player != move2.moved.player else {
+      return nil
+    }
     
+    var performedMoves = moves
+    if move1.finalPosition == move2.finalPosition {
+      // Based on terratory.
+    } else if move1.captured == move2.moved,
+              move2.captured == move1.moved {
+      // Both moves proceed.
+      
+    } else if move1.captured == move2.moved,
+              move1.moved.type > move2.moved.type {
+      performedMoves.remove(at:1)
+    } else if move2.captured == move1.moved,
+              move2.moved.type > move1.moved.type {
+      performedMoves.remove(at:0)
+    }
     
     // TODO: Actually implement this.
-    return Outcome(requestedMoves: moves, performedMoves: moves, finalState: gameState, status: .ongoing)
+    return Outcome(requestedMoves: moves,
+                   performedMoves: performedMoves,
+                   finalState: gameState,
+                   status: .ongoing)
   }
 }
 

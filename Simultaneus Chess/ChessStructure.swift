@@ -41,9 +41,41 @@ func +(left: Position, right: Position) -> Position {
 
 public typealias Player = Int
 
-// Mark: Peice
+// Mark: PieceType
 
-public typealias PieceType = Character
+enum PieceType : Int {
+  case pawn
+  case knight
+  case bishop
+  case rook
+  case queen
+  case king
+  
+  var signifier : String {
+    switch self {
+    case .pawn:
+      return "P"
+    case .knight:
+      return "N"
+    case .bishop:
+      return "B"
+    case .rook:
+      return "R"
+    case .queen:
+      return "Q"
+    case .king:
+      return "K"
+    }
+  }
+}
+
+extension PieceType : Comparable {
+  public static func <(lhs: PieceType, rhs: PieceType) -> Bool {
+    return lhs.rawValue < rhs.rawValue
+  }
+}
+
+// Mark: Piece
 
 public struct Piece {
     let player: Player
@@ -72,6 +104,10 @@ public struct Move {
   let moved: Piece
   let finalPosition: Position
   let captured: Piece?
+  
+  func asCapture(of captured: Piece) -> Move {
+    return Move(moved: moved, finalPosition: finalPosition, captured: captured)
+  }
 }
 
 extension Move : Equatable {}
@@ -120,6 +156,8 @@ public struct GameState {
     var captures = capturedPeices
     for move in moves {
       newPositions[move.moved] = move.finalPosition
+    }
+    for move in moves {
       if let capture = move.captured {
         captures.append(capture)
         newPositions.removeValue(forKey: capture)
@@ -168,7 +206,7 @@ public protocol Rules {
   var initialState: GameState { get }
   func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move]
   func isChecking(move: Move) -> Bool
-  func resolve(moves: [Move], in gameState: GameState) -> Outcome
+  func resolve(moves: [Move], in gameState: GameState) -> Outcome?
 }
 
 public extension Rules {
@@ -182,7 +220,7 @@ public extension Rules {
   
   func legalMoves(in gameState: GameState) -> [Move] {
     return possibleMoves(for: gameState)
-      .filter { possibleMoves(for: gameState.apply(moves: [$0]), excluding: [$0.moved.player]).first(where:isChecking) == nil}
+      .filter { possibleMoves(for: gameState.apply(moves: [$0]), excluding: [$0.moved.player]).first(where:isChecking) == nil }
   }
 }
 
