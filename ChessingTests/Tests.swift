@@ -1,15 +1,14 @@
 //
-//  Simultaneus_ChessTests.swift
-//  Simultaneus ChessTests
+//  Tests.swift
+//  Tests
 //
-//  Created by Nicholas Adam Johnson on 08/05/2016.
-//  Copyright © 2016 Nicholas Adam Johnson. All rights reserved.
+//  Created by Nicholas Adam Johnson on 20/06/2017.
+//  Copyright © 2017 Nicholas Adam Johnson. All rights reserved.
 //
 
 import XCTest
-@testable import Simultaneus_Chess
 
-class Simultaneus_ChessTests: XCTestCase {
+class Tests: XCTestCase {
     
     override func setUp() {
         super.setUp()

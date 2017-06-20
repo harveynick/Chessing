@@ -7,37 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F93ABF521CDFE0E90064A990 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93ABF511CDFE0E90064A990 /* AppDelegate.swift */; };
-		F93ABF5B1CDFE0E90064A990 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F93ABF5A1CDFE0E90064A990 /* Assets.xcassets */; };
-		F93ABF691CDFE0EA0064A990 /* Simultaneus_ChessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */; };
-		F9A0DC821D4E7B1F00E5B57F /* GameUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */; };
-		F9A0DC861D4EAC4900E5B57F /* ChessStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */; };
-		F9A0DC871D4EAC4900E5B57F /* SynchronisticChess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */; };
-		F9A0DC891D4EBAE400E5B57F /* ChessPrinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */; };
+		F978D8AE1EF9CC70000D4E4F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8A61EF9CC70000D4E4F /* AppDelegate.swift */; };
+		F978D8AF1EF9CC70000D4E4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F978D8A71EF9CC70000D4E4F /* Assets.xcassets */; };
+		F978D8B01EF9CC70000D4E4F /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = F978D8A81EF9CC70000D4E4F /* Base.lproj */; };
+		F978D8B11EF9CC70000D4E4F /* ChessPrinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8A91EF9CC70000D4E4F /* ChessPrinting.swift */; };
+		F978D8B21EF9CC70000D4E4F /* ChessStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8AA1EF9CC70000D4E4F /* ChessStructure.swift */; };
+		F978D8B31EF9CC70000D4E4F /* GameUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8AB1EF9CC70000D4E4F /* GameUI.swift */; };
+		F978D8B51EF9CC70000D4E4F /* SynchronisticChess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8AD1EF9CC70000D4E4F /* SynchronisticChess.swift */; };
+		F978D8BF1EF9CCEB000D4E4F /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F978D8B71EF9CC83000D4E4F /* Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		F93ABF651CDFE0EA0064A990 /* PBXContainerItemProxy */ = {
+		F978D8A11EF9C8A5000D4E4F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F93ABF461CDFE0E90064A990 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F93ABF4D1CDFE0E90064A990;
-			remoteInfo = "Simultaneus Chess";
+			remoteInfo = Chessing;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		F93ABF4E1CDFE0E90064A990 /* Chessing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chessing.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F93ABF511CDFE0E90064A990 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F93ABF5A1CDFE0E90064A990 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F93ABF5F1CDFE0EA0064A990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simultaneus_ChessTests.swift; sourceTree = "<group>"; };
-		F93ABF6A1CDFE0EA0064A990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUI.swift; sourceTree = "<group>"; };
-		F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChessStructure.swift; sourceTree = "<group>"; };
-		F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronisticChess.swift; sourceTree = "<group>"; };
-		F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChessPrinting.swift; sourceTree = "<group>"; };
+		F978D89C1EF9C8A5000D4E4F /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F978D8A61EF9CC70000D4E4F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Chessing/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		F978D8A71EF9CC70000D4E4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Chessing/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		F978D8A81EF9CC70000D4E4F /* Base.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Base.lproj; path = Chessing/Base.lproj; sourceTree = SOURCE_ROOT; };
+		F978D8A91EF9CC70000D4E4F /* ChessPrinting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChessPrinting.swift; path = Chessing/ChessPrinting.swift; sourceTree = SOURCE_ROOT; };
+		F978D8AA1EF9CC70000D4E4F /* ChessStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChessStructure.swift; path = Chessing/ChessStructure.swift; sourceTree = SOURCE_ROOT; };
+		F978D8AB1EF9CC70000D4E4F /* GameUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameUI.swift; path = Chessing/GameUI.swift; sourceTree = SOURCE_ROOT; };
+		F978D8AC1EF9CC70000D4E4F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Chessing/Info.plist; sourceTree = SOURCE_ROOT; };
+		F978D8AD1EF9CC70000D4E4F /* SynchronisticChess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SynchronisticChess.swift; path = Chessing/SynchronisticChess.swift; sourceTree = SOURCE_ROOT; };
+		F978D8B61EF9CC83000D4E4F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ChessingTests/Info.plist; sourceTree = SOURCE_ROOT; };
+		F978D8B71EF9CC83000D4E4F /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tests.swift; path = ChessingTests/Tests.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +50,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F93ABF611CDFE0EA0064A990 /* Frameworks */ = {
+		F978D8991EF9C8A5000D4E4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -61,8 +63,8 @@
 		F93ABF451CDFE0E90064A990 = {
 			isa = PBXGroup;
 			children = (
-				F93ABF501CDFE0E90064A990 /* Source */,
-				F93ABF671CDFE0EA0064A990 /* Tests */,
+				F93ABF501CDFE0E90064A990 /* Chessing */,
+				F978D89D1EF9C8A5000D4E4F /* ChessingTests */,
 				F93ABF4F1CDFE0E90064A990 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,34 +73,35 @@
 			isa = PBXGroup;
 			children = (
 				F93ABF4E1CDFE0E90064A990 /* Chessing.app */,
-				F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */,
+				F978D89C1EF9C8A5000D4E4F /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F93ABF501CDFE0E90064A990 /* Source */ = {
+		F93ABF501CDFE0E90064A990 /* Chessing */ = {
 			isa = PBXGroup;
 			children = (
-				F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */,
-				F9A0DC851D4EAC4900E5B57F /* SynchronisticChess.swift */,
-				F93ABF511CDFE0E90064A990 /* AppDelegate.swift */,
-				F93ABF5A1CDFE0E90064A990 /* Assets.xcassets */,
-				F93ABF5F1CDFE0EA0064A990 /* Info.plist */,
-				F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */,
-				F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */,
+				F978D8A61EF9CC70000D4E4F /* AppDelegate.swift */,
+				F978D8A71EF9CC70000D4E4F /* Assets.xcassets */,
+				F978D8A81EF9CC70000D4E4F /* Base.lproj */,
+				F978D8A91EF9CC70000D4E4F /* ChessPrinting.swift */,
+				F978D8AA1EF9CC70000D4E4F /* ChessStructure.swift */,
+				F978D8AB1EF9CC70000D4E4F /* GameUI.swift */,
+				F978D8AC1EF9CC70000D4E4F /* Info.plist */,
+				F978D8AD1EF9CC70000D4E4F /* SynchronisticChess.swift */,
 			);
-			name = Source;
+			name = Chessing;
 			path = "Simultaneus Chess";
 			sourceTree = "<group>";
 		};
-		F93ABF671CDFE0EA0064A990 /* Tests */ = {
+		F978D89D1EF9C8A5000D4E4F /* ChessingTests */ = {
 			isa = PBXGroup;
 			children = (
-				F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */,
-				F93ABF6A1CDFE0EA0064A990 /* Info.plist */,
+				F978D8B61EF9CC83000D4E4F /* Info.plist */,
+				F978D8B71EF9CC83000D4E4F /* Tests.swift */,
 			);
-			name = Tests;
-			path = "Simultaneus ChessTests";
+			name = ChessingTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -121,22 +124,22 @@
 			productReference = F93ABF4E1CDFE0E90064A990 /* Chessing.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F93ABF631CDFE0EA0064A990 /* ChessingTests */ = {
+		F978D89B1EF9C8A5000D4E4F /* Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "ChessingTests" */;
+			buildConfigurationList = F978D8A31EF9C8A5000D4E4F /* Build configuration list for PBXNativeTarget "Tests" */;
 			buildPhases = (
-				F93ABF601CDFE0EA0064A990 /* Sources */,
-				F93ABF611CDFE0EA0064A990 /* Frameworks */,
-				F93ABF621CDFE0EA0064A990 /* Resources */,
+				F978D8981EF9C8A5000D4E4F /* Sources */,
+				F978D8991EF9C8A5000D4E4F /* Frameworks */,
+				F978D89A1EF9C8A5000D4E4F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F93ABF661CDFE0EA0064A990 /* PBXTargetDependency */,
+				F978D8A21EF9C8A5000D4E4F /* PBXTargetDependency */,
 			);
-			name = ChessingTests;
-			productName = "Simultaneus ChessTests";
-			productReference = F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */;
+			name = Tests;
+			productName = Tests;
+			productReference = F978D89C1EF9C8A5000D4E4F /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -145,18 +148,17 @@
 		F93ABF461CDFE0E90064A990 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0820;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Nicholas Adam Johnson";
 				TargetAttributes = {
 					F93ABF4D1CDFE0E90064A990 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
-					F93ABF631CDFE0EA0064A990 = {
-						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = PFPP22QDW2;
-						LastSwiftMigration = 0800;
+					F978D89B1EF9C8A5000D4E4F = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
 						TestTargetID = F93ABF4D1CDFE0E90064A990;
 					};
 				};
@@ -175,7 +177,7 @@
 			projectRoot = "";
 			targets = (
 				F93ABF4D1CDFE0E90064A990 /* Chessing */,
-				F93ABF631CDFE0EA0064A990 /* ChessingTests */,
+				F978D89B1EF9C8A5000D4E4F /* Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -185,11 +187,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F93ABF5B1CDFE0E90064A990 /* Assets.xcassets in Resources */,
+				F978D8B01EF9CC70000D4E4F /* Base.lproj in Resources */,
+				F978D8AF1EF9CC70000D4E4F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F93ABF621CDFE0EA0064A990 /* Resources */ = {
+		F978D89A1EF9C8A5000D4E4F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -203,29 +206,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F93ABF521CDFE0E90064A990 /* AppDelegate.swift in Sources */,
-				F9A0DC861D4EAC4900E5B57F /* ChessStructure.swift in Sources */,
-				F9A0DC871D4EAC4900E5B57F /* SynchronisticChess.swift in Sources */,
-				F9A0DC891D4EBAE400E5B57F /* ChessPrinting.swift in Sources */,
-				F9A0DC821D4E7B1F00E5B57F /* GameUI.swift in Sources */,
+				F978D8B51EF9CC70000D4E4F /* SynchronisticChess.swift in Sources */,
+				F978D8AE1EF9CC70000D4E4F /* AppDelegate.swift in Sources */,
+				F978D8B21EF9CC70000D4E4F /* ChessStructure.swift in Sources */,
+				F978D8B11EF9CC70000D4E4F /* ChessPrinting.swift in Sources */,
+				F978D8B31EF9CC70000D4E4F /* GameUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F93ABF601CDFE0EA0064A990 /* Sources */ = {
+		F978D8981EF9C8A5000D4E4F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F93ABF691CDFE0EA0064A990 /* Simultaneus_ChessTests.swift in Sources */,
+				F978D8BF1EF9CCEB000D4E4F /* Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		F93ABF661CDFE0EA0064A990 /* PBXTargetDependency */ = {
+		F978D8A21EF9C8A5000D4E4F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F93ABF4D1CDFE0E90064A990 /* Chessing */;
-			targetProxy = F93ABF651CDFE0EA0064A990 /* PBXContainerItemProxy */;
+			targetProxy = F978D8A11EF9C8A5000D4E4F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -324,10 +327,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "Simultaneus Chess/Info.plist";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Chessing/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-Chess";
+				PRODUCT_BUNDLE_IDENTIFIER = com.harveynick.chessing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -336,39 +343,47 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "Simultaneus Chess/Info.plist";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Chessing/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-Chess";
+				PRODUCT_BUNDLE_IDENTIFIER = com.harveynick.chessing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
-		F93ABF711CDFE0EA0064A990 /* Debug */ = {
+		F978D8A41EF9C8A5000D4E4F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = PFPP22QDW2;
-				INFOPLIST_FILE = "Simultaneus ChessTests/Info.plist";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-ChessTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.harveynick.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Simultaneus Chess.app/Simultaneus Chess";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chessing.app/Chessing";
 			};
 			name = Debug;
 		};
-		F93ABF721CDFE0EA0064A990 /* Release */ = {
+		F978D8A51EF9C8A5000D4E4F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = PFPP22QDW2;
-				INFOPLIST_FILE = "Simultaneus ChessTests/Info.plist";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-ChessTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.harveynick.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Simultaneus Chess.app/Simultaneus Chess";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chessing.app/Chessing";
 			};
 			name = Release;
 		};
@@ -393,11 +408,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "ChessingTests" */ = {
+		F978D8A31EF9C8A5000D4E4F /* Build configuration list for PBXNativeTarget "Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F93ABF711CDFE0EA0064A990 /* Debug */,
-				F93ABF721CDFE0EA0064A990 /* Release */,
+				F978D8A41EF9C8A5000D4E4F /* Debug */,
+				F978D8A51EF9C8A5000D4E4F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
