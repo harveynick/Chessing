@@ -27,11 +27,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F93ABF4E1CDFE0E90064A990 /* Simultaneus Chess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Simultaneus Chess.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F93ABF4E1CDFE0E90064A990 /* Chessing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chessing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F93ABF511CDFE0E90064A990 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F93ABF5A1CDFE0E90064A990 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F93ABF5F1CDFE0EA0064A990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F93ABF641CDFE0EA0064A990 /* Simultaneus ChessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Simultaneus ChessTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simultaneus_ChessTests.swift; sourceTree = "<group>"; };
 		F93ABF6A1CDFE0EA0064A990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUI.swift; sourceTree = "<group>"; };
@@ -61,8 +61,8 @@
 		F93ABF451CDFE0E90064A990 = {
 			isa = PBXGroup;
 			children = (
-				F93ABF501CDFE0E90064A990 /* Simultaneus Chess */,
-				F93ABF671CDFE0EA0064A990 /* Simultaneus ChessTests */,
+				F93ABF501CDFE0E90064A990 /* Source */,
+				F93ABF671CDFE0EA0064A990 /* Tests */,
 				F93ABF4F1CDFE0E90064A990 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 		F93ABF4F1CDFE0E90064A990 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F93ABF4E1CDFE0E90064A990 /* Simultaneus Chess.app */,
-				F93ABF641CDFE0EA0064A990 /* Simultaneus ChessTests.xctest */,
+				F93ABF4E1CDFE0E90064A990 /* Chessing.app */,
+				F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F93ABF501CDFE0E90064A990 /* Simultaneus Chess */ = {
+		F93ABF501CDFE0E90064A990 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				F9A0DC841D4EAC4900E5B57F /* ChessStructure.swift */,
@@ -87,24 +87,26 @@
 				F9A0DC811D4E7B1F00E5B57F /* GameUI.swift */,
 				F9A0DC881D4EBAE400E5B57F /* ChessPrinting.swift */,
 			);
+			name = Source;
 			path = "Simultaneus Chess";
 			sourceTree = "<group>";
 		};
-		F93ABF671CDFE0EA0064A990 /* Simultaneus ChessTests */ = {
+		F93ABF671CDFE0EA0064A990 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				F93ABF681CDFE0EA0064A990 /* Simultaneus_ChessTests.swift */,
 				F93ABF6A1CDFE0EA0064A990 /* Info.plist */,
 			);
+			name = Tests;
 			path = "Simultaneus ChessTests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F93ABF4D1CDFE0E90064A990 /* Simultaneus Chess */ = {
+		F93ABF4D1CDFE0E90064A990 /* Chessing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F93ABF6D1CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Simultaneus Chess" */;
+			buildConfigurationList = F93ABF6D1CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Chessing" */;
 			buildPhases = (
 				F93ABF4A1CDFE0E90064A990 /* Sources */,
 				F93ABF4B1CDFE0E90064A990 /* Frameworks */,
@@ -114,14 +116,14 @@
 			);
 			dependencies = (
 			);
-			name = "Simultaneus Chess";
+			name = Chessing;
 			productName = "Simultaneus Chess";
-			productReference = F93ABF4E1CDFE0E90064A990 /* Simultaneus Chess.app */;
+			productReference = F93ABF4E1CDFE0E90064A990 /* Chessing.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F93ABF631CDFE0EA0064A990 /* Simultaneus ChessTests */ = {
+		F93ABF631CDFE0EA0064A990 /* ChessingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Simultaneus ChessTests" */;
+			buildConfigurationList = F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "ChessingTests" */;
 			buildPhases = (
 				F93ABF601CDFE0EA0064A990 /* Sources */,
 				F93ABF611CDFE0EA0064A990 /* Frameworks */,
@@ -132,9 +134,9 @@
 			dependencies = (
 				F93ABF661CDFE0EA0064A990 /* PBXTargetDependency */,
 			);
-			name = "Simultaneus ChessTests";
+			name = ChessingTests;
 			productName = "Simultaneus ChessTests";
-			productReference = F93ABF641CDFE0EA0064A990 /* Simultaneus ChessTests.xctest */;
+			productReference = F93ABF641CDFE0EA0064A990 /* ChessingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -153,12 +155,13 @@
 					};
 					F93ABF631CDFE0EA0064A990 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = PFPP22QDW2;
 						LastSwiftMigration = 0800;
 						TestTargetID = F93ABF4D1CDFE0E90064A990;
 					};
 				};
 			};
-			buildConfigurationList = F93ABF491CDFE0E90064A990 /* Build configuration list for PBXProject "Simultaneus Chess" */;
+			buildConfigurationList = F93ABF491CDFE0E90064A990 /* Build configuration list for PBXProject "Chessing" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -171,8 +174,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F93ABF4D1CDFE0E90064A990 /* Simultaneus Chess */,
-				F93ABF631CDFE0EA0064A990 /* Simultaneus ChessTests */,
+				F93ABF4D1CDFE0E90064A990 /* Chessing */,
+				F93ABF631CDFE0EA0064A990 /* ChessingTests */,
 			);
 		};
 /* End PBXProject section */
@@ -221,7 +224,7 @@
 /* Begin PBXTargetDependency section */
 		F93ABF661CDFE0EA0064A990 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F93ABF4D1CDFE0E90064A990 /* Simultaneus Chess */;
+			target = F93ABF4D1CDFE0E90064A990 /* Chessing */;
 			targetProxy = F93ABF651CDFE0EA0064A990 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -345,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = PFPP22QDW2;
 				INFOPLIST_FILE = "Simultaneus ChessTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-ChessTests";
@@ -358,6 +362,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = PFPP22QDW2;
 				INFOPLIST_FILE = "Simultaneus ChessTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.harveynick.Simultaneus-ChessTests";
@@ -370,7 +375,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F93ABF491CDFE0E90064A990 /* Build configuration list for PBXProject "Simultaneus Chess" */ = {
+		F93ABF491CDFE0E90064A990 /* Build configuration list for PBXProject "Chessing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F93ABF6B1CDFE0EA0064A990 /* Debug */,
@@ -379,7 +384,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F93ABF6D1CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Simultaneus Chess" */ = {
+		F93ABF6D1CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Chessing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F93ABF6E1CDFE0EA0064A990 /* Debug */,
@@ -388,7 +393,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Simultaneus ChessTests" */ = {
+		F93ABF701CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "ChessingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F93ABF711CDFE0EA0064A990 /* Debug */,
