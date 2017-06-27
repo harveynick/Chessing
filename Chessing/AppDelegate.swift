@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     let mainWindow = UIWindow()
     let game = Game(rules: RegularRules())
-    let chessController = ChessCollectionViewController(game: game, player: 1)
+    let chessController = ChessCollectionViewController(game: game, player: .black)
     
     mainWindow.rootViewController = UINavigationController(rootViewController: chessController)
     mainWindow.makeKeyAndVisible()

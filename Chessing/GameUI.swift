@@ -143,7 +143,8 @@ class ChessCollectionViewLayout : UICollectionViewLayout {
     
     let threatenedPositons : [Position]
     if let selectedPiece = self.selectedPiece {
-      let moves = self.game.rules.legalMoves(in:game.currentState).filter{ $0.moved == selectedPiece }
+      let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
+        .filter{ $0.moved == selectedPiece }
       threatenedPositons = moves.map { move in move.finalPosition }
     } else {
       threatenedPositons = []
@@ -292,7 +293,7 @@ class ChessCollectionViewController : UICollectionViewController {
       let pieceCell = cell as! ChessPieceCell
       let piece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
       pieceCell.designation = kPrettyDesignations[piece.type.signifier]
-      pieceCell.teamColor = (piece.player == 0) ? UIColor.blue : UIColor.red
+      pieceCell.teamColor = (piece.player == .white) ? UIColor.blue : UIColor.red
       return cell
     } else {
       return collectionView.dequeueReusableCell(withReuseIdentifier: ChessThreatCell.reuseIdentifier, for: indexPath)
@@ -366,7 +367,8 @@ class ChessCollectionViewController : UICollectionViewController {
     }
     if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
       let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-      let moves = self.game.rules.legalMoves(in:game.currentState).filter{ $0.moved == selectedPiece }
+      let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
+        .filter{ $0.moved == selectedPiece }
       return moves.count > 0
     }
     return false

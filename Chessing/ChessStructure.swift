@@ -39,7 +39,28 @@ func +(left: Position, right: Position) -> Position {
 
 // Mark: Player
 
-public typealias Player = Int
+public enum Player {
+  case white
+  case black
+  
+  func homeRow(forBoardSize boardSize: Int) -> Int {
+    switch self {
+    case .white:
+      return 0
+    case .black:
+      return boardSize - 1
+    }
+  }
+  
+  var forwards: Int {
+    switch self {
+    case .white:
+      return 1
+    case .black:
+      return -1
+    }
+  }
+}
 
 // Mark: PieceType
 
@@ -81,20 +102,20 @@ public struct Piece {
     let player: Player
     let type: PieceType
     let designation: String
-    let startingPosition: Position
+//    let startingPosition: Position
 }
 
 extension Piece : Hashable {
     public var hashValue: Int {
         get {
-            return startingPosition.hashValue
+            return designation.hashValue
         }
     }
 }
 
 extension Piece : Equatable {}
 public func ==(lhs: Piece, rhs: Piece) -> Bool {
-    return lhs.startingPosition == rhs.startingPosition
+    return lhs.designation == rhs.designation
 }
 
 
@@ -126,19 +147,19 @@ public struct GameState {
   let positionToPiece: [Position:Piece]
   let capturedPeices: [Piece]
     
-  init(boardSize: Int, startingPieces: [Piece]) {
-    self.boardSize = boardSize
-    var pieceToPosition : [Piece:Position] = [:]
-    var positionToPiece : [Position:Piece] = [:]
-    for piece in startingPieces {
-      let startingPosition = piece.startingPosition
-      pieceToPosition[piece] = startingPosition
-      positionToPiece[startingPosition] = piece
-    }
-    self.pieceToPosition = pieceToPosition
-    self.positionToPiece = positionToPiece
-    self.capturedPeices = []
-  }
+//  init(boardSize: Int, startingPieces: [Piece:Position]) {
+//    self.boardSize = boardSize
+//    var pieceToPosition : [Piece:Position] = [:]
+//    var positionToPiece : [Position:Piece] = [:]
+//    for piece in startingPieces {
+//      let startingPosition = piece.startingPosition
+//      pieceToPosition[piece] = startingPosition
+//      positionToPiece[startingPosition] = piece
+//    }
+//    self.pieceToPosition = startingPieces
+//    self.positionToPiece = positionToPiece
+//    self.capturedPeices = []
+//  }
   
   init(boardSize: Int, newPositions: [Piece:Position], newCaptures: [Piece]) {
     self.boardSize = boardSize
@@ -204,23 +225,25 @@ public struct MoveMatrix {
 public protocol Rules {
   var pieces : [Piece] { get }
   var initialState: GameState { get }
-  func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move]
+  func possibleMoves(for piece: Piece, in gameState: GameState, previousMoves: [[Move]]) -> [Move]
   func isChecking(move: Move) -> Bool
   func resolve(moves: [Move], in gameState: GameState) -> Outcome?
 }
 
 public extension Rules {
   
-  func possibleMoves(for gameState: GameState, excluding: [Player] = []) -> [Move] {
+  func possibleMoves(for gameState: GameState, previousMoves: [[Move]], excluding: [Player] = []) -> [Move] {
     return pieces
       .filter { !gameState.capturedPeices.contains($0) && !excluding.contains($0.player) }
-      .map { possibleMoves(for: $0, in: gameState) }
+      .map { possibleMoves(for: $0, in: gameState, previousMoves: previousMoves) }
       .reduce([]) { $0 + $1 }
   }
   
-  func legalMoves(in gameState: GameState) -> [Move] {
-    return possibleMoves(for: gameState)
-      .filter { possibleMoves(for: gameState.apply(moves: [$0]), excluding: [$0.moved.player]).first(where:isChecking) == nil }
+  func legalMoves(in gameState: GameState, previousMoves: [[Move]]) -> [Move] {
+    return possibleMoves(for: gameState, previousMoves: previousMoves)
+      .filter { possibleMoves(for: gameState.apply(moves: [$0]),
+                              previousMoves: previousMoves,
+                              excluding: [$0.moved.player]).first(where:isChecking) == nil }
   }
 }
 
@@ -228,7 +251,8 @@ public extension Rules {
 
 public struct Game {
   let rules: Rules
-  let outcomes: Array<Outcome>
+  let outcomes: [Outcome]
+  
   var currentState: GameState {
     get {
       if let outcome = self.outcomes.last {
@@ -237,6 +261,10 @@ public struct Game {
         return self.rules.initialState
       }
     }
+  }
+  
+  var previousMoves: [[Move]] {
+    return outcomes.map { $0.performedMoves }
   }
   
   fileprivate init (rules: Rules, outcomes: Array<Outcome>) {

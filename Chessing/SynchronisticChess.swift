@@ -112,20 +112,24 @@ func movesFromChains(piece: Piece,
 }
 
 
-public func regularInitialPieces() -> [Piece] {
-  var pieces: [Piece] = []
-  for player in [ 0, 1 ] {
+public func regularInitialPieces() -> [Piece:Position] {
+  var pieces: [Piece:Position] = [:]
+  for player in [ Player.white, Player.black ] {
+    let homeRow = player.homeRow(forBoardSize: kBoardSize)
     for (column, (belongsType, pieceType)) in fealty.enumerated() {
-        pieces.append(Piece(
+      let position = Position(row: homeRow, column: column)
+      let piece = Piece(
             player: player,
             type:pieceType,
-            designation:"\(player)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: (player == 0) ? 0 : 7, column: column)))
-        pieces.append(Piece(
+            designation:"\(player)\(belongsType)\(pieceType)")
+      pieces[piece] = position
+      
+      let pawnPosition = Position(row: homeRow + player.forwards, column: column);
+      let pawn = Piece(
             player: player,
             type:.pawn,
-            designation:"\(player)\(belongsType)\(pieceType)",
-            startingPosition:Position(row: (player == 0) ? 1 : 6, column: column)))
+            designation:"\(player)\(belongsType)\(pieceType)p")
+      pieces[pawn] = pawnPosition
     }
   }
   return pieces
@@ -134,12 +138,12 @@ public func regularInitialPieces() -> [Piece] {
 struct RegularRules : Rules {
   let boardSize: Int = kBoardSize
   let players: UInt = 2
-  let pieces: [Piece] = regularInitialPieces()
+  let pieces: [Piece] = regularInitialPieces().keys.sorted(by: { $0.designation < $1.designation })
   var initialState : GameState {
-    return GameState(boardSize: kBoardSize, startingPieces: self.pieces)
+    return GameState(boardSize: kBoardSize, newPositions: regularInitialPieces(), newCaptures:[])
   }
     
-  func possibleMoves(for piece: Piece, in gameState: GameState) -> [Move] {
+  func possibleMoves(for piece: Piece, in gameState: GameState, previousMoves: [[Move]]) -> [Move] {
     guard let position = gameState.pieceToPosition[piece] else {
       return []
     }
@@ -156,19 +160,19 @@ struct RegularRules : Rules {
       return movesFromChains(piece: piece, moveChains: kingMoveChains, gameState: gameState)
     case .pawn:
       var moves: [Move] = []
-      let yDirection = piece.startingPosition.row > (self.boardSize / 2) ? -1 : 1;
-      let forwards = Position(row: yDirection, column: 0)
+      let forwards = Position(row: piece.player.forwards, column: 0)
       let consideredPosition1 = position + forwards
       if gameState.positionToPiece[consideredPosition1] == nil {
-          moves.append(Move(moved: piece, finalPosition: consideredPosition1, captured: nil))
-        if (position == piece.startingPosition) {
+        moves.append(Move(moved: piece, finalPosition: consideredPosition1, captured: nil))
+        if (previousMoves.flatMap{ $0.map{ $0.moved } }.first(where: { $0 == piece }) == nil) {
           let consideredPosition2 = consideredPosition1 + forwards
           if gameState.positionToPiece[consideredPosition2] == nil {
             moves.append(Move(moved: piece, finalPosition: consideredPosition2, captured: nil))
           }
         }
       }
-      let possibleCaptures = [ Position(row: yDirection, column: 1), Position(row: yDirection, column: -1) ]
+      let possibleCaptures = [ Position(row: piece.player.forwards, column: 1),
+                               Position(row: piece.player.forwards, column: -1) ]
       for delta in possibleCaptures {
       let consideredPosition3 = position + delta
         if let target = gameState.positionToPiece[consideredPosition3] {
@@ -194,10 +198,10 @@ struct RegularRules : Rules {
     
     var performedMoves = moves
     if move1.finalPosition == move2.finalPosition {
-      // Based on terratory.
+      // TODO Based on terratory.
     } else if move1.captured == move2.moved,
               move2.captured == move1.moved {
-      // Both moves proceed.
+      // TODO Both moves proceed.
       
     } else if move1.captured == move2.moved,
               move1.moved.type > move2.moved.type {
