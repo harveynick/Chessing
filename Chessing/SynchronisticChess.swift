@@ -140,7 +140,7 @@ struct RegularRules : Rules {
   let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces().keys.sorted(by: { $0.designation < $1.designation })
   var initialState : GameState {
-    return GameState(boardSize: kBoardSize, newPositions: regularInitialPieces(), newCaptures:[])
+    return GameState(boardSize: kBoardSize, positions: regularInitialPieces())
   }
     
   func possibleMoves(for piece: Piece, in gameState: GameState, previousMoves: [[Move]]) -> [Move] {

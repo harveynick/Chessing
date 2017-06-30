@@ -9,7 +9,12 @@
 import Foundation
 import UIKit
 
-let kPrettyDesignations = [ "R": "♜", "N": "♞", "B" : "♝", "Q" : "♛", "K" : "♚", "P": "♟" ]
+let kPrettyDesignations = [ "R" : "♜",
+                            "N" : "♞",
+                            "B" : "♝",
+                            "Q" : "♛",
+                            "K" : "♚",
+                            "P" : "♟" ]
 
 enum SectionType : Int {
   case board, piece, threat, count

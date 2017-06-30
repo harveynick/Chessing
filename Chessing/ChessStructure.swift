@@ -146,30 +146,16 @@ public struct GameState {
   let pieceToPosition: [Piece:Position]
   let positionToPiece: [Position:Piece]
   let capturedPeices: [Piece]
-    
-//  init(boardSize: Int, startingPieces: [Piece:Position]) {
-//    self.boardSize = boardSize
-//    var pieceToPosition : [Piece:Position] = [:]
-//    var positionToPiece : [Position:Piece] = [:]
-//    for piece in startingPieces {
-//      let startingPosition = piece.startingPosition
-//      pieceToPosition[piece] = startingPosition
-//      positionToPiece[startingPosition] = piece
-//    }
-//    self.pieceToPosition = startingPieces
-//    self.positionToPiece = positionToPiece
-//    self.capturedPeices = []
-//  }
   
-  init(boardSize: Int, newPositions: [Piece:Position], newCaptures: [Piece]) {
+  init(boardSize: Int, positions: [Piece:Position], captures: [Piece] = []) {
     self.boardSize = boardSize
-    self.pieceToPosition = newPositions
+    self.pieceToPosition = positions
     var positionToPiece : [Position:Piece] = [:]
-    for (piece, position) in newPositions {
+    for (piece, position) in positions {
       positionToPiece[position] = piece
     }
     self.positionToPiece = positionToPiece
-    self.capturedPeices = newCaptures
+    self.capturedPeices = captures
   }
   
   func apply(moves: [Move]) -> GameState {
@@ -184,7 +170,7 @@ public struct GameState {
         newPositions.removeValue(forKey: capture)
       }
     }
-    return GameState(boardSize: boardSize, newPositions: newPositions, newCaptures: captures)
+    return GameState(boardSize: boardSize, positions: newPositions, captures: captures)
   }
 }
 
@@ -236,14 +222,14 @@ public extension Rules {
     return pieces
       .filter { !gameState.capturedPeices.contains($0) && !excluding.contains($0.player) }
       .map { possibleMoves(for: $0, in: gameState, previousMoves: previousMoves) }
-      .reduce([]) { $0 + $1 }
+      .flatMap { $0 }
   }
   
   func legalMoves(in gameState: GameState, previousMoves: [[Move]]) -> [Move] {
     return possibleMoves(for: gameState, previousMoves: previousMoves)
-      .filter { possibleMoves(for: gameState.apply(moves: [$0]),
-                              previousMoves: previousMoves,
-                              excluding: [$0.moved.player]).first(where:isChecking) == nil }
+      .filter { !possibleMoves(for: gameState.apply(moves: [$0]),
+                               previousMoves: previousMoves,
+                               excluding: [$0.moved.player]).contains(where:isChecking) }
   }
 }
 
