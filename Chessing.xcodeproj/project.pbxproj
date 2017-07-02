@@ -112,6 +112,7 @@
 			buildConfigurationList = F93ABF6D1CDFE0EA0064A990 /* Build configuration list for PBXNativeTarget "Chessing" */;
 			buildPhases = (
 				F93ABF4A1CDFE0E90064A990 /* Sources */,
+				F91A8FF81F095BC700E01961 /* SwiftLint */,
 				F93ABF4B1CDFE0E90064A990 /* Frameworks */,
 				F93ABF4C1CDFE0E90064A990 /* Resources */,
 			);
@@ -200,6 +201,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F91A8FF81F095BC700E01961 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F93ABF4A1CDFE0E90064A990 /* Sources */ = {
