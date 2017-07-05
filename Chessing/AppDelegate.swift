@@ -18,11 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     let mainWindow = UIWindow()
     let game = Game(rules: RegularRules())
     let chessController = ChessCollectionViewController(game: game, player: .black)
-    
+
     mainWindow.rootViewController = UINavigationController(rootViewController: chessController)
     mainWindow.makeKeyAndVisible()
     self.window = mainWindow
     return true
   }
 }
-

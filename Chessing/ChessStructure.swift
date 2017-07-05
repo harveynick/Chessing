@@ -3,16 +3,16 @@
 public struct Position {
   let row: Int
   let column: Int
-  
+
   init(row: Int, column: Int) {
       self.row = row
       self.column = column
   }
-  
+
   func withRow(_ row: Int) -> Position {
     return Position(row: row, column: self.column)
   }
-  
+
   func withColoumn(_ column: Int) -> Position {
     return Position(row: self.row, column: column)
   }
@@ -42,7 +42,7 @@ func +(left: Position, right: Position) -> Position {
 public enum Player {
   case white
   case black
-  
+
   func homeRow(forBoardSize boardSize: Int) -> Int {
     switch self {
     case .white:
@@ -51,7 +51,7 @@ public enum Player {
       return boardSize - 1
     }
   }
-  
+
   var forwards: Int {
     switch self {
     case .white:
@@ -64,15 +64,15 @@ public enum Player {
 
 // Mark: PieceType
 
-enum PieceType : Int {
+enum PieceType: Int {
   case pawn
   case knight
   case bishop
   case rook
   case queen
   case king
-  
-  var signifier : String {
+
+  var signifier: String {
     switch self {
     case .pawn:
       return "P"
@@ -118,14 +118,13 @@ public func ==(lhs: Piece, rhs: Piece) -> Bool {
     return lhs.designation == rhs.designation
 }
 
-
 // Mark: Move
 
 public struct Move {
   let moved: Piece
   let finalPosition: Position
   let captured: Piece?
-  
+
   func asCapture(of captured: Piece) -> Move {
     return Move(moved: moved, finalPosition: finalPosition, captured: captured)
   }
@@ -146,18 +145,18 @@ public struct GameState {
   let pieceToPosition: [Piece:Position]
   let positionToPiece: [Position:Piece]
   let capturedPeices: [Piece]
-  
+
   init(boardSize: Int, positions: [Piece:Position], captures: [Piece] = []) {
     self.boardSize = boardSize
     self.pieceToPosition = positions
-    var positionToPiece : [Position:Piece] = [:]
+    var positionToPiece: [Position:Piece] = [:]
     for (piece, position) in positions {
       positionToPiece[position] = piece
     }
     self.positionToPiece = positionToPiece
     self.capturedPeices = captures
   }
-  
+
   func apply(moves: [Move]) -> GameState {
     var newPositions = pieceToPosition
     var captures = capturedPeices
@@ -196,7 +195,7 @@ public struct Outcome {
   let requestedMoves: [Move]
   let performedMoves: [Move]
   let finalState: GameState
-  let status : GameStatus
+  let status: GameStatus
 }
 
 // Mark: MoveMatrix
@@ -209,7 +208,7 @@ public struct MoveMatrix {
 // Mark: Rules
 
 public protocol Rules {
-  var pieces : [Piece] { get }
+  var pieces: [Piece] { get }
   var initialState: GameState { get }
   func possibleMoves(for piece: Piece, in gameState: GameState, previousMoves: [[Move]]) -> [Move]
   func isChecking(move: Move) -> Bool
@@ -217,14 +216,14 @@ public protocol Rules {
 }
 
 public extension Rules {
-  
+
   func possibleMoves(for gameState: GameState, previousMoves: [[Move]], excluding: [Player] = []) -> [Move] {
     return pieces
       .filter { !gameState.capturedPeices.contains($0) && !excluding.contains($0.player) }
       .map { possibleMoves(for: $0, in: gameState, previousMoves: previousMoves) }
       .flatMap { $0 }
   }
-  
+
   func legalMoves(in gameState: GameState, previousMoves: [[Move]]) -> [Move] {
     return possibleMoves(for: gameState, previousMoves: previousMoves)
       .filter { !possibleMoves(for: gameState.apply(moves: [$0]),
@@ -238,7 +237,7 @@ public extension Rules {
 public struct Game {
   let rules: Rules
   let outcomes: [Outcome]
-  
+
   var currentState: GameState {
     get {
       if let outcome = self.outcomes.last {
@@ -248,11 +247,11 @@ public struct Game {
       }
     }
   }
-  
+
   var previousMoves: [[Move]] {
     return outcomes.map { $0.performedMoves }
   }
-  
+
   fileprivate init (rules: Rules, outcomes: Array<Outcome>) {
     self.rules = rules
     self.outcomes = outcomes
@@ -265,7 +264,7 @@ public struct Game {
                                  status: .ongoing)
     self = Game(rules:rules, outcomes:[initialOutcome])
   }
-    
+
   func withOutcome(_ outcome: Outcome) -> Game {
     var newOutcomes = self.outcomes
     newOutcomes .append(outcome)

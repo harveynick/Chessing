@@ -1,9 +1,8 @@
 import Foundation
 
-
 let kBoardSize = 8
 
-let fealty : [(PieceType, PieceType)] = [
+let fealty: [(PieceType, PieceType)] = [
     (.queen, .rook),
     (.queen, .knight),
     (.queen, .bishop),
@@ -13,7 +12,6 @@ let fealty : [(PieceType, PieceType)] = [
     (.king, .knight),
     (.king, .rook) ]
 
-
 let knightMoveChains = [
   [Position(row: 2, column: 1)],
   [Position(row: 1, column: 2)],
@@ -22,7 +20,7 @@ let knightMoveChains = [
   [Position(row: -2, column: 1)],
   [Position(row: -1, column: 2)],
   [Position(row: -2, column: -1)],
-  [Position(row: -1, column: -2)],
+  [Position(row: -1, column: -2)]
 ]
 
 let boardRange = 0 ..< kBoardSize
@@ -31,14 +29,14 @@ let rookMoveChains = [
   boardRange.map { value in Position(row: value, column: 0) },
   boardRange.map { value in Position(row: 0, column: value) },
   boardRange.map { value in Position(row: -value, column: 0) },
-  boardRange.map { value in Position(row: 0, column: -value) },
+  boardRange.map { value in Position(row: 0, column: -value) }
 ]
 
 let bisopMoveChains = [
   boardRange.map { value in Position(row: value, column: value) },
   boardRange.map { value in Position(row: value, column: -value) },
   boardRange.map { value in Position(row: -value, column: value) },
-  boardRange.map { value in Position(row: -value, column: -value) },
+  boardRange.map { value in Position(row: -value, column: -value) }
 ]
 
 let queenMoveChains = rookMoveChains + bisopMoveChains
@@ -51,7 +49,7 @@ let kingMoveChains = [
   [Position(row: -0, column: 1)],
   [Position(row: -1, column: 0)],
   [Position(row: -0, column: -1)],
-  [Position(row: -1, column: -0)],
+  [Position(row: -1, column: -0)]
 ]
 
 enum MoveOperationOutcome {
@@ -106,11 +104,10 @@ func movesFromChains(piece: Piece,
         break
       }
     }
-    
+
   }
   return moves
 }
-
 
 public func regularInitialPieces() -> [Piece:Position] {
   var pieces: [Piece:Position] = [:]
@@ -123,8 +120,8 @@ public func regularInitialPieces() -> [Piece:Position] {
             type:pieceType,
             designation:"\(player)\(belongsType)\(pieceType)")
       pieces[piece] = position
-      
-      let pawnPosition = Position(row: homeRow + player.forwards, column: column);
+
+      let pawnPosition = Position(row: homeRow + player.forwards, column: column)
       let pawn = Piece(
             player: player,
             type:.pawn,
@@ -135,14 +132,14 @@ public func regularInitialPieces() -> [Piece:Position] {
   return pieces
 }
 
-struct RegularRules : Rules {
+struct RegularRules: Rules {
   let boardSize: Int = kBoardSize
   let players: UInt = 2
   let pieces: [Piece] = regularInitialPieces().keys.sorted(by: { $0.designation < $1.designation })
-  var initialState : GameState {
+  var initialState: GameState {
     return GameState(boardSize: kBoardSize, positions: regularInitialPieces())
   }
-    
+
   func possibleMoves(for piece: Piece, in gameState: GameState, previousMoves: [[Move]]) -> [Move] {
     guard let position = gameState.pieceToPosition[piece] else {
       return []
@@ -164,7 +161,7 @@ struct RegularRules : Rules {
       let consideredPosition1 = position + forwards
       if gameState.positionToPiece[consideredPosition1] == nil {
         moves.append(Move(moved: piece, finalPosition: consideredPosition1, captured: nil))
-        if (previousMoves.flatMap{ $0.map{ $0.moved } }.first(where: { $0 == piece }) == nil) {
+        if (previousMoves.flatMap { $0.map { $0.moved } }.first(where: { $0 == piece }) == nil) {
           let consideredPosition2 = consideredPosition1 + forwards
           if gameState.positionToPiece[consideredPosition2] == nil {
             moves.append(Move(moved: piece, finalPosition: consideredPosition2, captured: nil))
@@ -184,25 +181,25 @@ struct RegularRules : Rules {
       return moves
     }
   }
-  
+
   func isChecking(move: Move) -> Bool {
     return move.captured?.type == .king
   }
-  
+
   func resolve(moves: [Move], in gameState: GameState) -> Outcome? {
     let move1 = moves[0]
     let move2 = moves[1]
     guard move1.moved.player != move2.moved.player else {
       return nil
     }
-    
+
     var performedMoves = moves
     if move1.finalPosition == move2.finalPosition {
       // TODO Based on terratory.
     } else if move1.captured == move2.moved,
               move2.captured == move1.moved {
       // TODO Both moves proceed.
-      
+
     } else if move1.captured == move2.moved,
               move1.moved.type > move2.moved.type {
       performedMoves.remove(at:1)
@@ -210,7 +207,7 @@ struct RegularRules : Rules {
               move2.moved.type > move1.moved.type {
       performedMoves.remove(at:0)
     }
-    
+
     // TODO: Actually implement this.
     return Outcome(requestedMoves: moves,
                    performedMoves: performedMoves,
@@ -218,4 +215,3 @@ struct RegularRules : Rules {
                    status: .ongoing)
   }
 }
-

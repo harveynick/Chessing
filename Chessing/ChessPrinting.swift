@@ -1,5 +1,5 @@
 extension Position : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       let columnNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters
       let index = columnNames.index(columnNames.startIndex,
@@ -10,19 +10,19 @@ extension Position : CustomStringConvertible {
 }
 
 extension Move : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       var output = "\(self.moved) -> \(self.finalPosition)"
       if let capturedPiece = self.captured {
         output += "(\(capturedPiece))"
       }
-      return output;
+      return output
     }
   }
 }
 
 extension Piece : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       return self.designation
     }
@@ -30,15 +30,15 @@ extension Piece : CustomStringConvertible {
 }
 
 extension GameState : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       var breakLine = "+"
       for _ in 0 ..< self.boardSize {
         breakLine += "---+"
       }
       breakLine += "\n"
-      
-      var output = breakLine;
+
+      var output = breakLine
       for row in 0 ..< self.boardSize {
         output += "|"
         for column in 0 ..< self.boardSize {
@@ -53,13 +53,13 @@ extension GameState : CustomStringConvertible {
         output += "\n"
         output += breakLine
       }
-      return output;
+      return output
     }
   }
 }
 
 extension Outcome : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       var output = performedMoves
         .map { move in move.description + "\n" }
@@ -71,7 +71,7 @@ extension Outcome : CustomStringConvertible {
 }
 
 extension MoveMatrix : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     let movesString = availableMoves
       .map { piece, availableMoves in
         let movesForPiece = availableMoves
@@ -93,7 +93,7 @@ extension MoveMatrix : CustomStringConvertible {
 }
 
 extension Game : CustomStringConvertible {
-  public var description : String {
+  public var description: String {
     get {
       return self.outcomes
         .map { outcome in outcome.description + "\n" }
