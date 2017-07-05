@@ -11,17 +11,17 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
-  var window: UIWindow?
+    var window: UIWindow?
 
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    let mainWindow = UIWindow()
-    let game = Game(rules: RegularRules())
-    let chessController = ChessCollectionViewController(game: game, player: .black)
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let mainWindow = UIWindow()
+        let game = Game(rules: RegularRules())
+        let chessController = ChessCollectionViewController(game: game, player: .black)
 
-    mainWindow.rootViewController = UINavigationController(rootViewController: chessController)
-    mainWindow.makeKeyAndVisible()
-    self.window = mainWindow
-    return true
-  }
+        mainWindow.rootViewController = UINavigationController(rootViewController: chessController)
+        mainWindow.makeKeyAndVisible()
+        self.window = mainWindow
+        return true
+    }
 }
