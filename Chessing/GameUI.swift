@@ -17,389 +17,399 @@ let kPrettyDesignations = [ "R": "♜",
                             "P": "♟" ]
 
 enum SectionType: Int {
-  case board, piece, threat, count
+    case board, piece, threat, count
 }
 
-// Mark: ChessBoardCell
+// MARK: ChessBoardCell
 
 class ChessBoardCell: UICollectionViewCell {
-  static let reuseIdentifier = "ChessBoardCell"
+    static let reuseIdentifier = "ChessBoardCell"
 }
 
-// Mark: ChessPieceCell
+// MARK: ChessPieceCell
 
 class ChessPieceCell: UICollectionViewCell {
-  static let reuseIdentifier = "ChessPieceCell"
+    static let reuseIdentifier = "ChessPieceCell"
 
-  fileprivate let label: UILabel
+    fileprivate let label: UILabel
 
-  var designation: String? {
-    didSet {
-      label.text = designation
+    var designation: String? {
+        didSet {
+            label.text = designation
+        }
     }
-  }
 
-  var teamColor: UIColor? {
-    didSet {
-      label.textColor = teamColor
+    var teamColor: UIColor? {
+        didSet {
+            label.textColor = teamColor
+        }
     }
-  }
 
-  override var isSelected: Bool {
-    didSet {
-      label.font = UIFont.systemFont(ofSize: self.isSelected ? 40 : 32)
+    override var isSelected: Bool {
+        didSet {
+            label.font = UIFont.systemFont(ofSize: self.isSelected ? 40 : 32)
+        }
     }
-  }
 
-  override var isHighlighted: Bool {
-    didSet {
-      label.font = UIFont.systemFont(ofSize: self.isHighlighted ? 40 : 32)
+    override var isHighlighted: Bool {
+        didSet {
+            label.font = UIFont.systemFont(ofSize: self.isHighlighted ? 40 : 32)
+        }
     }
-  }
 
-  override init(frame: CGRect) {
-    label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-    label.autoresizingMask = UIViewAutoresizing(rawValue: UIViewAutoresizing.flexibleWidth.rawValue | UIViewAutoresizing.flexibleHeight.rawValue)
-    label.textAlignment = .center
-    label.font = UIFont.systemFont(ofSize: 32)
-    label.adjustsFontSizeToFitWidth = true
-    super.init(frame: frame)
-    self.addSubview(label)
-  }
+    override init(frame: CGRect) {
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
+        label.autoresizingMask = UIViewAutoresizing(rawValue:
+            UIViewAutoresizing.flexibleWidth.rawValue | UIViewAutoresizing.flexibleHeight.rawValue)
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 32)
+        label.adjustsFontSizeToFitWidth = true
+        super.init(frame: frame)
+        self.addSubview(label)
+    }
 
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
 }
 
-// Mark: ChessThreatCell
+// MARK: ChessThreatCell
 
 class ChessThreatCell: UICollectionViewCell {
-  static let reuseIdentifier = "ChessThreatCell"
+    static let reuseIdentifier = "ChessThreatCell"
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    self.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
-  }
-
-  override var isSelected: Bool {
-    didSet {
-      let baseColor = self.isSelected ? UIColor.darkGray : UIColor.gray
-      self.backgroundColor = baseColor.withAlphaComponent(0.5)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
     }
-  }
 
-  override var isHighlighted: Bool {
-    didSet {
-      let baseColor = self.isHighlighted ? UIColor.darkGray : UIColor.gray
-      self.backgroundColor = baseColor.withAlphaComponent(0.5)
+    override var isSelected: Bool {
+        didSet {
+            let baseColor = self.isSelected ? UIColor.darkGray : UIColor.gray
+            self.backgroundColor = baseColor.withAlphaComponent(0.5)
+        }
     }
-  }
 
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
+    override var isHighlighted: Bool {
+        didSet {
+            let baseColor = self.isHighlighted ? UIColor.darkGray : UIColor.gray
+            self.backgroundColor = baseColor.withAlphaComponent(0.5)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // Mark - ChessCollectionViewLayout
 
 class ChessCollectionViewLayout: UICollectionViewLayout {
 
-  fileprivate var boardRects: [CGRect]?
-  fileprivate var peiceRects: [CGRect]?
-  fileprivate var threats: [Bool]?
-  fileprivate let game: Game
-  fileprivate let selectedPiece: Piece?
+    fileprivate var boardRects: [CGRect]?
+    fileprivate var peiceRects: [CGRect]?
+    fileprivate var threats: [Bool]?
+    fileprivate let game: Game
+    fileprivate let selectedPiece: Piece?
 
-  init(game: Game, selectedPiece: Piece?) {
-    self.game = game
-    self.selectedPiece = selectedPiece
-    super.init()
-    self.register(ChessBoardCell.self, forDecorationViewOfKind: ChessBoardCell.reuseIdentifier)
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-  override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-    return true
-  }
-
-  override func prepare() {
-    super.prepare()
-    guard let collectionView = self.collectionView else {
-      return
-    }
-    let gameController = self.game.rules
-    let size =  UIEdgeInsetsInsetRect(collectionView.bounds, collectionView.contentInset).size
-    let minDimension = min(size.width, size.height)
-    let tileSize = floor(minDimension / 8)
-    let leftPadding = floor((size.width - (tileSize * 8)) / 2)
-    let topPadding = floor((size.height - (tileSize * 8)) / 2)
-
-    func rectForRow(_ row: Int, column: Int) -> CGRect {
-      return CGRect(x: leftPadding + CGFloat(column) * tileSize,
-                        y: topPadding + CGFloat(row) * tileSize,
-                        width: tileSize,
-                        height: tileSize)
+    init(game: Game, selectedPiece: Piece?) {
+        self.game = game
+        self.selectedPiece = selectedPiece
+        super.init()
+        self.register(ChessBoardCell.self, forDecorationViewOfKind: ChessBoardCell.reuseIdentifier)
     }
 
-    let threatenedPositons: [Position]
-    if let selectedPiece = self.selectedPiece {
-      let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
-        .filter { $0.moved == selectedPiece }
-      threatenedPositons = moves.map { move in move.finalPosition }
-    } else {
-      threatenedPositons = []
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    var boardRects = Array<CGRect>()
-    var peiceRects = Array<CGRect>()
-    var threats = Array<Bool>()
-    for i in 0 ..< 64 {
-      let column = i % 8
-      let row = (i - column) / 8
-      boardRects.append(rectForRow(row, column: column))
-      threats.append(threatenedPositons.contains(Position(row: row, column: column)))
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
     }
-    for peice in self.game.rules.pieces {
-      if let position = self.game.currentState.pieceToPosition[peice] {
-        peiceRects.append(rectForRow(Int(position.row), column: Int(position.column)))
-      } else {
-        // handle taken peices
-      }
-    }
-    self.boardRects = boardRects
-    self.peiceRects = peiceRects
-    self.threats = threats
-  }
 
-  override var collectionViewContentSize: CGSize {
-    guard let boardRects = self.boardRects, let boardRect = boardRects.last else {
-      return CGSize.zero
-    }
-    return CGSize(width: boardRect.maxX, height: boardRect.maxY)
-  }
-
-  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-    guard let boardRects = self.boardRects, let peiceRects = self.peiceRects else {
-      return nil
-    }
-    var attributes = Array<UICollectionViewLayoutAttributes>()
-    for (i, boardRect) in boardRects.enumerated() {
-      if (rect.intersects(boardRect)) {
-        let boardIndexPath = IndexPath(item:i, section:SectionType.board.rawValue)
-        if let localAttributes = self.layoutAttributesForItem(at: boardIndexPath) {
-          attributes.append(localAttributes)
+    override func prepare() {
+        super.prepare()
+        guard let collectionView = self.collectionView else {
+            return
         }
-        let threatIndexPath = IndexPath(item:i, section:SectionType.threat.rawValue)
-        if let localAttributes = self.layoutAttributesForItem(at: threatIndexPath) {
-          attributes.append(localAttributes)
-        }
-      }
-    }
-    for (i, peiceRect) in peiceRects.enumerated() {
-      if (rect.intersects(peiceRect)) {
-        let indexPath = IndexPath(item:i, section:SectionType.piece.rawValue)
-        if let localAttributes = self.layoutAttributesForItem(at: indexPath) {
-          attributes.append(localAttributes)
-        }
-      }
-    }
-    return attributes
-  }
+        let gameController = self.game.rules
+        let size =  UIEdgeInsetsInsetRect(collectionView.bounds, collectionView.contentInset).size
+        let minDimension = min(size.width, size.height)
+        let tileSize = floor(minDimension / 8)
+        let leftPadding = floor((size.width - (tileSize * 8)) / 2)
+        let topPadding = floor((size.height - (tileSize * 8)) / 2)
 
-  override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-    if ((indexPath as NSIndexPath).section == SectionType.board.rawValue) {
-      guard let boardRects = self.boardRects else {
-        return nil
-      }
-      let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-      attributes.frame = boardRects[(indexPath as NSIndexPath).item]
-      return attributes
-    } else if ((indexPath as NSIndexPath).section == SectionType.piece.rawValue) {
-      guard let peiceRects = self.peiceRects else {
-        return nil
-      }
-      let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-      attributes.frame = peiceRects[(indexPath as NSIndexPath).item]
-      return attributes
-    } else {
-      guard let boardRects = self.boardRects, let threats = self.threats else {
-        return nil
-      }
-      let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-      attributes.frame = boardRects[(indexPath as NSIndexPath).item]
-      attributes.alpha = threats[(indexPath as NSIndexPath).item] ? 1.0 : 0.0
-      return attributes
+        func rectForRow(_ row: Int, column: Int) -> CGRect {
+            return CGRect(x: leftPadding + CGFloat(column) * tileSize,
+                          y: topPadding + CGFloat(row) * tileSize,
+                          width: tileSize,
+                          height: tileSize)
+        }
+
+        let threatenedPositons: [Position]
+        if let selectedPiece = self.selectedPiece {
+            let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
+                .filter { $0.moved == selectedPiece }
+            threatenedPositons = moves.map { move in move.finalPosition }
+        } else {
+            threatenedPositons = []
+        }
+
+        var boardRects = [CGRect]()
+        var peiceRects = [CGRect]()
+        var threats = [Bool]()
+        for i in 0 ..< 64 {
+            let column = i % 8
+            let row = (i - column) / 8
+            boardRects.append(rectForRow(row, column: column))
+            threats.append(threatenedPositons.contains(Position(row: row, column: column)))
+        }
+        for peice in self.game.rules.pieces {
+            if let position = self.game.currentState.pieceToPosition[peice] {
+                peiceRects.append(rectForRow(Int(position.row), column: Int(position.column)))
+            } else {
+                // handle taken peices
+            }
+        }
+        self.boardRects = boardRects
+        self.peiceRects = peiceRects
+        self.threats = threats
     }
-  }
+
+    override var collectionViewContentSize: CGSize {
+        guard let boardRects = self.boardRects, let boardRect = boardRects.last else {
+            return CGSize.zero
+        }
+        return CGSize(width: boardRect.maxX, height: boardRect.maxY)
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        guard let boardRects = self.boardRects, let peiceRects = self.peiceRects else {
+            return nil
+        }
+        var attributes = [UICollectionViewLayoutAttributes]()
+        for (i, boardRect) in boardRects.enumerated() {
+            if rect.intersects(boardRect) {
+                let boardIndexPath = IndexPath(item:i, section:SectionType.board.rawValue)
+                if let localAttributes = self.layoutAttributesForItem(at: boardIndexPath) {
+                    attributes.append(localAttributes)
+                }
+                let threatIndexPath = IndexPath(item:i, section:SectionType.threat.rawValue)
+                if let localAttributes = self.layoutAttributesForItem(at: threatIndexPath) {
+                    attributes.append(localAttributes)
+                }
+            }
+        }
+        for (i, peiceRect) in peiceRects.enumerated() {
+            if rect.intersects(peiceRect) {
+                let indexPath = IndexPath(item:i, section:SectionType.piece.rawValue)
+                if let localAttributes = self.layoutAttributesForItem(at: indexPath) {
+                    attributes.append(localAttributes)
+                }
+            }
+        }
+        return attributes
+    }
+
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        if (indexPath as NSIndexPath).section == SectionType.board.rawValue {
+            guard let boardRects = self.boardRects else {
+                return nil
+            }
+            let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+            attributes.frame = boardRects[(indexPath as NSIndexPath).item]
+            return attributes
+        } else if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            guard let peiceRects = self.peiceRects else {
+                return nil
+            }
+            let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+            attributes.frame = peiceRects[(indexPath as NSIndexPath).item]
+            return attributes
+        } else {
+            guard let boardRects = self.boardRects, let threats = self.threats else {
+                return nil
+            }
+            let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+            attributes.frame = boardRects[(indexPath as NSIndexPath).item]
+            attributes.alpha = threats[(indexPath as NSIndexPath).item] ? 1.0 : 0.0
+            return attributes
+        }
+    }
 }
 
 class ChessCollectionViewController: UICollectionViewController {
 
-  var game: Game
-  let player: Player
+    var game: Game
+    let player: Player
 
-  init(game: Game, player: Player) {
-    self.game = game
-    self.player = player
-    super.init(collectionViewLayout: ChessCollectionViewLayout(game:game, selectedPiece:nil))
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    guard let collectionView  = self.collectionView else {
-      return
+    init(game: Game, player: Player) {
+        self.game = game
+        self.player = player
+        super.init(collectionViewLayout: ChessCollectionViewLayout(game:game, selectedPiece:nil))
     }
-    collectionView.backgroundColor = UIColor.white
-    collectionView.allowsMultipleSelection = true
-    collectionView.register(ChessBoardCell.self, forCellWithReuseIdentifier: ChessBoardCell.reuseIdentifier)
-    collectionView.register(ChessPieceCell.self, forCellWithReuseIdentifier: ChessPieceCell.reuseIdentifier)
-    collectionView.register(ChessThreatCell.self, forCellWithReuseIdentifier: ChessThreatCell.reuseIdentifier)
-  }
 
-  override var prefersStatusBarHidden: Bool {
-    return true
-  }
-
-  /// Mark: UICollectionViewDataSource
-
-  override func numberOfSections(in collectionView: UICollectionView) -> Int {
-    return SectionType.count.rawValue
-  }
-
-  override func collectionView(_ collectionView: UICollectionView,
-                               numberOfItemsInSection section: Int) -> Int {
-    let rules = self.game.rules
-    if section == SectionType.board.rawValue ||  section == SectionType.threat.rawValue {
-      return rules.initialState.boardSize * rules.initialState.boardSize
-    } else {
-      return rules.pieces.count
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-  }
 
-  override func collectionView(_ collectionView: UICollectionView,
-                               cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    if ((indexPath as NSIndexPath).section == SectionType.board.rawValue) {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessBoardCell.reuseIdentifier, for: indexPath)
-      let column = (indexPath as NSIndexPath).item % self.game.currentState.boardSize
-      let row = ((indexPath as NSIndexPath).item - column) / self.game.currentState.boardSize
-      cell.contentView.backgroundColor = ((row + column) % 2 == 0) ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.9, alpha: 1)
-      return cell
-    } else if ((indexPath as NSIndexPath).section == SectionType.piece.rawValue) {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessPieceCell.reuseIdentifier, for: indexPath)
-      let pieceCell = cell as! ChessPieceCell
-      let piece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-      pieceCell.designation = kPrettyDesignations[piece.type.signifier]
-      pieceCell.teamColor = (piece.player == .white) ? UIColor.blue : UIColor.red
-      return cell
-    } else {
-      return collectionView.dequeueReusableCell(withReuseIdentifier: ChessThreatCell.reuseIdentifier, for: indexPath)
-    }
-  }
-
-  /// Mark: UICollectionViewDelegate
-
-  override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-    if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
-      return true
-    }
-    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-      return selectedPiece.player == self.player
-    }
-    if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
-      for selectedIndex in indexPathsForSelectedItems {
-        collectionView.deselectItem(at: selectedIndex, animated: false)
-      }
-      self.navigationItem.rightBarButtonItem = nil
-    }
-    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
-    collectionView.setCollectionViewLayout(newLayout, animated: false)
-    return false
-  }
-
-  override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-    if indexPath.section == SectionType.threat.rawValue {
-      if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
-        for selectedIndex in indexPathsForSelectedItems {
-          if selectedIndex.section == SectionType.threat.rawValue {
-            collectionView.deselectItem(at: selectedIndex, animated: false)
-          }
-          self.navigationItem.rightBarButtonItem = nil
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard let collectionView  = self.collectionView else {
+            return
         }
-      }
-      return
+        collectionView.backgroundColor = UIColor.white
+        collectionView.allowsMultipleSelection = true
+        collectionView.register(ChessBoardCell.self, forCellWithReuseIdentifier: ChessBoardCell.reuseIdentifier)
+        collectionView.register(ChessPieceCell.self, forCellWithReuseIdentifier: ChessPieceCell.reuseIdentifier)
+        collectionView.register(ChessThreatCell.self, forCellWithReuseIdentifier: ChessThreatCell.reuseIdentifier)
     }
-    let selectedPiece: Piece?
-    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
-       for selectedIndex in indexPathsForSelectedItems {
-        if indexPath == selectedIndex {
-          continue
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+
+    // MARK: UICollectionViewDataSource
+
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return SectionType.count.rawValue
+    }
+
+    override func collectionView(_ collectionView: UICollectionView,
+                                 numberOfItemsInSection section: Int) -> Int {
+        let rules = self.game.rules
+        if section == SectionType.board.rawValue ||  section == SectionType.threat.rawValue {
+            return rules.initialState.boardSize * rules.initialState.boardSize
+        } else {
+            return rules.pieces.count
         }
-         collectionView.deselectItem(at: selectedIndex, animated: false)
-       }
+    }
+
+    override func collectionView(_ collectionView: UICollectionView,
+                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if (indexPath as NSIndexPath).section == SectionType.board.rawValue {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessBoardCell.reuseIdentifier,
+                                                          for: indexPath)
+            let column = (indexPath as NSIndexPath).item % self.game.currentState.boardSize
+            let row = ((indexPath as NSIndexPath).item - column) / self.game.currentState.boardSize
+            cell.contentView.backgroundColor =
+                ((row + column) % 2 == 0) ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.9, alpha: 1)
+            return cell
+        } else if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChessPieceCell.reuseIdentifier,
+                                                          for: indexPath)
+            if let pieceCell = cell as? ChessPieceCell {
+                let piece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+                pieceCell.designation = kPrettyDesignations[piece.type.signifier]
+                pieceCell.teamColor = (piece.player == .white) ? UIColor.blue : UIColor.red
+            }
+            return cell
+        } else {
+            return collectionView.dequeueReusableCell(withReuseIdentifier: ChessThreatCell.reuseIdentifier,
+                                                      for: indexPath)
+        }
+    }
+
+    // MARK: UICollectionViewDelegate
+
+    override func collectionView(_ collectionView: UICollectionView,
+                                 shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+            return true
+        }
+        if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+            return selectedPiece.player == self.player
+        }
+        if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
+            for selectedIndex in indexPathsForSelectedItems {
+                collectionView.deselectItem(at: selectedIndex, animated: false)
+            }
+            self.navigationItem.rightBarButtonItem = nil
+        }
+        let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
+        return false
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        if indexPath.section == SectionType.threat.rawValue {
+            if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
+                for selectedIndex in indexPathsForSelectedItems {
+                    if selectedIndex.section == SectionType.threat.rawValue {
+                        collectionView.deselectItem(at: selectedIndex, animated: false)
+                    }
+                    self.navigationItem.rightBarButtonItem = nil
+                }
+            }
+            return
+        }
+        let selectedPiece: Piece?
+        if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            if let indexPathsForSelectedItems = collectionView.indexPathsForSelectedItems {
+                for selectedIndex in indexPathsForSelectedItems {
+                    if indexPath == selectedIndex {
+                        continue
+                    }
+                    collectionView.deselectItem(at: selectedIndex, animated: false)
+                }
+                self.navigationItem.rightBarButtonItem = nil
+            }
+            selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+        } else {
+            selectedPiece = nil
+        }
+
+        let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+            return
+        }
+        let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+            return true
+        }
+        if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+            let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
+                .filter { $0.moved == selectedPiece }
+            return moves.count > 0
+        }
+        return false
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Play",
+                                                                     style: .plain,
+                                                                     target: nil,
+                                                                     action: nil)
+            return
+        }
+        let selectedPiece: Piece?
+        if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
+            selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
+        } else {
+            selectedPiece = nil
+        }
+        let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         self.navigationItem.rightBarButtonItem = nil
-      }
-      selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-    } else {
-      selectedPiece = nil
+        if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
+            return
+        }
+        let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
     }
-
-    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
-    collectionView.setCollectionViewLayout(newLayout, animated: false)
-  }
-
-  override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
-    if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
-      return
-    }
-    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
-    collectionView.setCollectionViewLayout(newLayout, animated: false)
-  }
-
-  override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
-      return true
-    }
-    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      let selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-      let moves = self.game.rules.legalMoves(in:game.currentState, previousMoves: game.previousMoves)
-        .filter { $0.moved == selectedPiece }
-      return moves.count > 0
-    }
-    return false
-  }
-
-  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
-      self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Play", style: .plain, target: nil, action: nil)
-      return
-    }
-    let selectedPiece: Piece?
-    if (indexPath as NSIndexPath).section == SectionType.piece.rawValue {
-      selectedPiece = self.game.rules.pieces[(indexPath as NSIndexPath).item]
-    } else {
-      selectedPiece = nil
-    }
-    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:selectedPiece)
-    collectionView.setCollectionViewLayout(newLayout, animated: false)
-  }
-
-  override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-    self.navigationItem.rightBarButtonItem = nil
-    if (indexPath as NSIndexPath).section == SectionType.threat.rawValue {
-      return
-    }
-    let newLayout = ChessCollectionViewLayout(game:self.game, selectedPiece:nil)
-    collectionView.setCollectionViewLayout(newLayout, animated: false)
-  }
 }
