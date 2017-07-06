@@ -63,10 +63,11 @@ extension Outcome : CustomStringConvertible {
 extension MoveMatrix : CustomStringConvertible {
     public var description: String {
         let movesString = availableMoves
-            .map { piece, availableMoves in
+            .map { (arg) in
+                let (piece, availableMoves) = arg
                 let movesForPiece = availableMoves
-                    .map { move in "\t\t\(move)" }
-                    .reduce("") { initial, next in initial + next }
+                    .map { move in "\t\t\(move)\n" }
+                    .joined()
                 return "\t\(piece)\n\(movesForPiece)"
             }
             .reduce("") { initial, next in initial + next }
